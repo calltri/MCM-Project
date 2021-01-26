@@ -22,13 +22,30 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-class activity_distributed_quiz_functions {
+class mod_distributed_quiz_functions {
     
         /**
      * Sends out a notification 
+     * 
+     * $quizid
      */
-    public static function send_notification () {
-
+    public static function send_notification ($quizid) {
+        $message = new \core\message\message();
+        $message->component = 'mod_distributed_quiz'; // Your plugin's name
+        $message->name = 'created'; // Your notification name from message.php
+        $message->userfrom = core_user::get_noreply_user(); // If the message is 'from' a specific user you can set them here
+        $message->userto = $user;
+        $message->subject = get_string('quizcreatednotificationmessage', 'distributed_quiz');
+        $message->fullmessage = get_string('quizcreatednotificationmessage', 'distributed_quiz');
+        $message->fullmessageformat = FORMAT_MARKDOWN;
+        $message->fullmessagehtml = '<p>message body</p>';
+        $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message
+        $message->contexturl = (new \moodle_url(get_string('quizurl', 'distributed_quiz', $quizid)))->out(false); // A relevant URL for the notification
+        $message->contexturlname = 'Course list'; // Link title explaining where users get to for the contexturl
+        
+        
+        // Actually send the message
+        $messageid = message_send($message);
     }
     
 }
