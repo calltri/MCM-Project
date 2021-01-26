@@ -14,13 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Strings for component 'distributed_quiz', language 'en', branch 'MOODLE_20_STABLE'
- *
- * @package   mod_quiz
- * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+/*
+ * Author: Tristan Call
+ * Date Created: 1/25/20
+ * Last Updated: 1/25/20
  */
 
-$string['distributed_quizname'] = 'distributed quiz';
-$string['messageprovider:created'] = 'Notificatin of quiz creation';
+defined('MOODLE_INTERNAL') || die();
+
+class activity_distributed_quiz_functions {
+    
+        /**
+     * Sends out a notification 
+     */
+    public static function send_notification () {
+
+    }
+    
+}
