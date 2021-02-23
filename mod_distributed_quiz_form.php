@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * This file is used when adding/editing a module to a course. 
+ * It contains the elements that will be displayed on the form responsible for creating/installing an instance of your module.
+ * 
+ */
+
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
@@ -14,7 +20,7 @@ class mod_distributed_quiz_mod_form extends moodleform_mod {
  
         $mform =& $this->_form;
  
-        $mform->addElement('text', 'name', get_string('distributed_quizname', 'distributed_quiz'), array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('pluginname', 'distributed_quiz'), array('size'=>'64'));
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
  

@@ -13,17 +13,17 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+ 
 /**
- * Strings for component 'distributed_quiz', language 'en', branch 'MOODLE_20_STABLE'
- *
- * @package   mod_quiz
- * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @package   plugintype_pluginname
+ * @copyright 2020, You Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-$string['pluginname'] = 'distributed quiz';
-$string['quizcreatednotificationsubject'] = 'Quiz Created';
-$string['quizcreatednotificationmessage'] = 'A quiz has been created. Please select the link to take the quiz promptly';
-$string['messageprovider:created'] = 'Notificatin of quiz creation';
-$string['quizurl'] = '/mod/assign/view.php?id={$a}';
+ 
+defined('MOODLE_INTERNAL') || die();
+ 
+$plugin->version = 2021020800;
+$plugin->requires = 2018120303.11;
+$plugin->component = 'mod_distributed_quiz';
+$plugin->maturity = MATURITY_BETA;
+ 
