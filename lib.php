@@ -15,60 +15,190 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of functions for the distributed_quiz module.
+ * Library of interface functions and constants.
  *
- * This contains functions that are called also from outside the distributed_quiz module
- * Functions that are only called by the distributed_quiz module itself are in {@link locallib.php}
- *
- * @package    mod_distributed_quiz
- * @copyright  1999 onwards Martin Dougiamas {@link http://moodle.com}
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_distributedquiz
+ * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Return if the plugin supports $feature.
+ *
+ * @param string $feature Constant representing the feature.
+ * @return true | null True if the feature is supported, null otherwise.
+ */
+function distributedquiz_supports($feature) {
+    switch ($feature) {
+        case FEATURE_GRADE_HAS_GRADE:
+            return true;
+        case FEATURE_MOD_INTRO:
+            return true;
+        default:
+            return null;
+    }
+}
 
 /**
- * Given an object containing all the necessary data,
- * (defined by the form in mod_form.php) this function
- * will create a new instance and return the id number
- * of the new instance.
+ * Saves a new instance of the mod_distributedquiz into the database.
  *
- * @param object $distributed_quiz the data that came from the form.
- * @return mixed the id of the new instance on success,
- *          false or a string error message on failure.
+ * Given an object containing all the necessary data, (defined by the form
+ * in mod_form.php) this function will create a new instance and return the id
+ * number of the instance.
+ *
+ * @param object $moduleinstance An object from the form.
+ * @param mod_distributedquiz_mod_form $mform The form.
+ * @return int The id of the newly inserted record.
  */
-function distributed_quiz_add_instance($distributed_quiz) {
+function distributedquiz_add_instance($moduleinstance, $mform = null) {
     global $DB;
 
+    $moduleinstance->timecreated = time();
 
-    return $distributed_quiz->id;
+    $id = $DB->insert_record('distributedquiz', $moduleinstance);
+
+    return $id;
 }
 
 /**
- * Given an object containing all the necessary data,
- * (defined by the form in mod_form.php) this function
- * will update an existing instance with new data.
+ * Updates an instance of the mod_distributedquiz in the database.
  *
- * @param object $distributed_quiz the data that came from the form.
- * @return mixed true on success, false or a string error message on failure.
+ * Given an object containing all the necessary data (defined in mod_form.php),
+ * this function will update an existing instance with new data.
+ *
+ * @param object $moduleinstance An object from the form in mod_form.php.
+ * @param mod_distributedquiz_mod_form $mform The form.
+ * @return bool True if successful, false otherwise.
  */
-function distributed_quiz_update_instance($distributed_quiz) {
+function distributedquiz_update_instance($moduleinstance, $mform = null) {
+    global $DB;
+
+    $moduleinstance->timemodified = time();
+    $moduleinstance->id = $moduleinstance->instance;
+
+    return $DB->update_record('distributedquiz', $moduleinstance);
+}
+
+/**
+ * Removes an instance of the mod_distributedquiz from the database.
+ *
+ * @param int $id Id of the module instance.
+ * @return bool True if successful, false on failure.
+ */
+function distributedquiz_delete_instance($id) {
+    global $DB;
+
+    $exists = $DB->get_record('distributedquiz', array('id' => $id));
+    if (!$exists) {
+        return false;
+    }
+
+    $DB->delete_records('distributedquiz', array('id' => $id));
 
     return true;
 }
 
 /**
- * Given an ID of an instance of this module,
- * this function will permanently delete the instance
- * and any data that depends on it.
+ * Is a given scale used by the instance of mod_distributedquiz?
  *
- * @param int $id the id of the distributed_quiz to delete.
- * @return bool success or failure.
+ * This function returns if a scale is being used by one mod_distributedquiz
+ * if it has support for grading and scales.
+ *
+ * @param int $moduleinstanceid ID of an instance of this module.
+ * @param int $scaleid ID of the scale.
+ * @return bool True if the scale is used by the given mod_distributedquiz instance.
  */
-function distributed_quiz_delete_instance($id) {
+function distributedquiz_scale_used($moduleinstanceid, $scaleid) {
+    global $DB;
 
+    if ($scaleid && $DB->record_exists('distributedquiz', array('id' => $moduleinstanceid, 'grade' => -$scaleid))) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-    return true;
+/**
+ * Checks if scale is being used by any instance of mod_distributedquiz.
+ *
+ * This is used to find out if scale used anywhere.
+ *
+ * @param int $scaleid ID of the scale.
+ * @return bool True if the scale is used by any mod_distributedquiz instance.
+ */
+function distributedquiz_scale_used_anywhere($scaleid) {
+    global $DB;
+
+    if ($scaleid and $DB->record_exists('distributedquiz', array('grade' => -$scaleid))) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Creates or updates grade item for the given mod_distributedquiz instance.
+ *
+ * Needed by {@link grade_update_mod_grades()}.
+ *
+ * @param stdClass $moduleinstance Instance object with extra cmidnumber and modname property.
+ * @param bool $reset Reset grades in the gradebook.
+ * @return void.
+ */
+function distributedquiz_grade_item_update($moduleinstance, $reset=false) {
+    global $CFG;
+    require_once($CFG->libdir.'/gradelib.php');
+
+    $item = array();
+    $item['itemname'] = clean_param($moduleinstance->name, PARAM_NOTAGS);
+    $item['gradetype'] = GRADE_TYPE_VALUE;
+
+    if ($moduleinstance->grade > 0) {
+        $item['gradetype'] = GRADE_TYPE_VALUE;
+        $item['grademax']  = $moduleinstance->grade;
+        $item['grademin']  = 0;
+    } else if ($moduleinstance->grade < 0) {
+        $item['gradetype'] = GRADE_TYPE_SCALE;
+        $item['scaleid']   = -$moduleinstance->grade;
+    } else {
+        $item['gradetype'] = GRADE_TYPE_NONE;
+    }
+    if ($reset) {
+        $item['reset'] = true;
+    }
+
+    grade_update('/mod/distributedquiz', $moduleinstance->course, 'mod', 'mod_distributedquiz', $moduleinstance->id, 0, null, $item);
+}
+
+/**
+ * Delete grade item for given mod_distributedquiz instance.
+ *
+ * @param stdClass $moduleinstance Instance object.
+ * @return grade_item.
+ */
+function distributedquiz_grade_item_delete($moduleinstance) {
+    global $CFG;
+    require_once($CFG->libdir.'/gradelib.php');
+
+    return grade_update('/mod/distributedquiz', $moduleinstance->course, 'mod', 'distributedquiz',
+                        $moduleinstance->id, 0, null, array('deleted' => 1));
+}
+
+/**
+ * Update mod_distributedquiz grades in the gradebook.
+ *
+ * Needed by {@link grade_update_mod_grades()}.
+ *
+ * @param stdClass $moduleinstance Instance object with extra cmidnumber and modname property.
+ * @param int $userid Update grade of specific user only, 0 means all participants.
+ */
+function distributedquiz_update_grades($moduleinstance, $userid = 0) {
+    global $CFG, $DB;
+    require_once($CFG->libdir.'/gradelib.php');
+
+    // Populate array of grade objects indexed by userid.
+    $grades = array();
+    grade_update('/mod/distributedquiz', $moduleinstance->course, 'mod', 'mod_distributedquiz', $moduleinstance->id, 0, $grades);
 }

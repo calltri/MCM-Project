@@ -15,19 +15,35 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin message providers are defined here.
+ * File containing tests for notifications.
  *
  * @package     mod_distributedquiz
- * @category    message
+ * @category    test
  * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$messageproviders = [
+// For installation and usage of PHPUnit within Moodle please read:
+// https://docs.moodle.org/dev/PHPUnit
+//
+// Documentation for writing PHPUnit tests for Moodle can be found here:
+// https://docs.moodle.org/dev/PHPUnit_integration
+// https://docs.moodle.org/dev/Writing_PHPUnit_tests
+//
+// The official PHPUnit homepage is at:
+// https://phpunit.de
 
-    'created' => array(
-        'capability' => 'mod/quiz:emailnotifysubmission'
-    ),
-];
+/**
+ * The notifications test class.
+ *
+ * @package    mod_distributedquiz
+ * @copyright  2021 Tristan Call <tcall@zagmail.gonzaga.edu>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class mod_distributedquiz_notifications_testcase extends advanced_testcase {
+
+    // Write the tests here as public funcions.
+
+}

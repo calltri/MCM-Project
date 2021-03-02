@@ -15,19 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin message providers are defined here.
+ * Plugin strings are defined here.
  *
  * @package     mod_distributedquiz
- * @category    message
+ * @category    string
  * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$messageproviders = [
-
-    'created' => array(
-        'capability' => 'mod/quiz:emailnotifysubmission'
-    ),
-];
+$string['messageprovider:created'] = 'Notify students that a quiz has been created';
+$string['pluginname'] = 'Distributed Quiz';

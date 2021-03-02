@@ -15,19 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin message providers are defined here.
+ * Plugin administration pages are defined here.
  *
  * @package     mod_distributedquiz
- * @category    message
+ * @category    admin
  * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$messageproviders = [
-
-    'created' => array(
-        'capability' => 'mod/quiz:emailnotifysubmission'
-    ),
-];
+if ($ADMIN->fulltree) {
+   // TODO: Define the plugin settings page.
+   // https://docs.moodle.org/dev/Admin_settings
+}

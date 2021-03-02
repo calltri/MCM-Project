@@ -13,17 +13,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 /**
- * @package   plugintype_pluginname
- * @copyright 2020, You Name <your@email.address>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Plugin version and other meta-data are defined here.
+ *
+ * @package     mod_distributedquiz
+ * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
+
 defined('MOODLE_INTERNAL') || die();
- 
-$plugin->version = 2021020800;
-$plugin->requires = 2018120303.11;
-$plugin->component = 'mod_distributed_quiz';
-$plugin->maturity = MATURITY_BETA;
- 
+
+$plugin->component = 'mod_distributedquiz';
+$plugin->release = '0.1.0';
+$plugin->version = 2021022400;
+$plugin->requires = 2018052000;
+$plugin->maturity = MATURITY_ALPHA;

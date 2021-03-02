@@ -15,19 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin message providers are defined here.
+ * Plugin upgrade steps are defined here.
  *
  * @package     mod_distributedquiz
- * @category    message
+ * @category    upgrade
  * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$messageproviders = [
+/**
+ * Execute mod_distributedquiz upgrade from the given old version.
+ *
+ * @param int $oldversion
+ * @return bool
+ */
+function xmldb_distributedquiz_upgrade($oldversion) {
+    global $DB;
 
-    'created' => array(
-        'capability' => 'mod/quiz:emailnotifysubmission'
-    ),
-];
+    $dbman = $DB->get_manager();
+
+    // For further information please read the Upgrade API documentation:
+    // https://docs.moodle.org/dev/Upgrade_API
+    //
+    // You will also have to create the db/install.xml file by using the XMLDB Editor.
+    // Documentation for the XMLDB Editor can be found at:
+    // https://docs.moodle.org/dev/XMLDB_editor
+
+    return true;
+}
