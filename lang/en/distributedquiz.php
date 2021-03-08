@@ -29,3 +29,8 @@ $string['messageprovider:created'] = 'Notify students that a quiz has been creat
 $string['pluginname'] = 'Distributed Quiz';
 $string['distributedquiz'] = 'Distributed Quiz';
 $string['distributedquizplural'] = 'Distributed Quizes';
+
+$string['quizcreatednotificationsubject'] = 'Quiz Created';
+$string['quizcreatednotificationmessage'] = 'A quiz has been created. Please select the link to take the quiz promptly';
+$string['messageprovider:created'] = 'Notificatin of quiz creation';
+$string['quizurl'] = '/mod/assign/view.php?id={$a}';
