@@ -45,5 +45,16 @@ defined('MOODLE_INTERNAL') || die();
 class mod_distributedquiz_notifications_testcase extends advanced_testcase {
 
     // Write the tests here as public funcions.
+    public function test_send_notification() {
+        $functions = new block_leaderboard_functions;
+        $this->preventResetByRollback();
+        $sink = $this->redirectMessages();
+        //... code that is sending messages
+        $functions->send_notification(1);
+        
+        $messages = $sink->get_messages();
+        $this->assertEquals(3, count($messages));
+        //.. test messages were generated in correct order with appropriate content
+    }
 
 }
