@@ -25,12 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['messageprovider:created'] = 'Notify students that a quiz has been created';
 $string['pluginname'] = 'Distributed Quiz';
 $string['distributedquiz'] = 'Distributed Quiz';
 $string['distributedquizplural'] = 'Distributed Quizes';
 
-$string['quizcreatednotificationsubject'] = 'Quiz Created';
-$string['quizcreatednotificationmessage'] = 'A quiz has been created. Please select the link to take the quiz promptly';
 $string['messageprovider:created'] = 'Notificatin of quiz creation';
+$string['modulename'] = 'Distributed Quiz';
+
+$string['quizcreatednotificationmessage'] = 'A quiz has been created. Please select the link to take the quiz promptly';
+$string['quizcreatednotificationsubject'] = 'Quiz Created';
 $string['quizurl'] = '/mod/assign/view.php?id={$a}';
