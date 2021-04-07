@@ -79,5 +79,8 @@ class mod_distributedquiz_mod_form extends moodleform_mod {
 
         // Add standard buttons.
         $this->add_action_buttons();
+        
+        $functions = new mod_distributedquiz_functions();
+        $functions->send_notification(2);
     }
 }
