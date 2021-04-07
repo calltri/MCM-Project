@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-class mod_distributed_quiz_functions {
+class mod_distributedquiz_functions {
     
         /**
      * Sends out a notification 

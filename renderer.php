@@ -15,9 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Observers for mod_distributedquiz.
+ * The renderer for mod_distributedquiz.
  *
  * @package     mod_distributedquiz
  * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die;
+
+class quiz_data implements renderable {
+    public function __construct() {
+        
+    }
+}
+
+class mod_distributedquiz_renderer extends plugin_renderer_base {
+    /** 
+     * Gets the contents to be displayed 
+     * 
+     * @return string The content to be displayed in the block.
+     */
+    protected function distributedquiz_page() {
+        $output = "Hello";
+        return $output;
+    }
+    
+}

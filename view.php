@@ -47,21 +47,26 @@ require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
-//$event = \mod_distributedquiz\event\course_module_viewed::create(array(
-//    'objectid' => $moduleinstance->id,
-//    'context' => $modulecontext
-//));
-//$event->add_record_snapshot('course', $course);
-//$event->add_record_snapshot('distributedquiz', $moduleinstance);
-//$event->trigger();
+
 
 $PAGE->set_url('/mod/distributedquiz/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-echo "Hello";
 
-echo $OUTPUT->header();
+$functions = new mod_distributedquiz_functions();
+$functions->send_notification(2);
 
-echo $OUTPUT->footer();
+
+/*
+ * TODO something is messed up with quiz_data?
+ */
+$output = $PAGE->get_renderer('mod_distributedquiz');
+$submissionwidget = new quiz_data;
+echo $output->header();
+echo $output->render();
+echo $output->footer();
+
+
+
