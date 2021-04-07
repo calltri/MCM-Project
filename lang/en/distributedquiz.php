@@ -25,14 +25,25 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+#TODO Add distributedquizname_help
+# distributedquizsettings
+# distributedquizfieldset
+
+
 $string['pluginname'] = 'Distributed Quiz';
 $string['distributedquizname'] = 'Distributed Quiz';
 $string['pluginadministrator'] = 'Tristan Call';
-$string['distributedquiznameplural'] = 'Distributed Quizes';
+$string['distributedquiznameplural'] = 'Distributed Quizzes';
 
 $string['messageprovider:created'] = 'Notificatin of quiz creation';
 $string['modulename'] = 'Distributed Quiz';
+$string['modulenameplural'] = 'Distributed Quizzes';
 
 $string['quizcreatednotificationmessage'] = 'A quiz has been created. Please select the link to take the quiz promptly';
 $string['quizcreatednotificationsubject'] = 'Quiz Created';
 $string['quizurl'] = '/mod/assign/view.php?id={$a}';
+
+# Placeholders to get rid of debug errors
+$string['distributedquizsettings'] = 'These are settings';
+$string['distributedquizfieldset'] = 'What is this';
+$string['distributedquizname_help'] = 'For help email tcall';
