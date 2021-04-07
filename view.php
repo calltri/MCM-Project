@@ -58,15 +58,18 @@ $PAGE->set_context($modulecontext);
 $functions = new mod_distributedquiz_functions();
 $functions->send_notification(2);
 
+//echo $OUTPUT->header();
+//echo $OUTPUT->box('This is working!!');
+//echo $OUTPUT->footer();
 
 /*
  * TODO something is messed up with quiz_data?
  */
 $output = $PAGE->get_renderer('mod_distributedquiz');
-$submissionwidget = new quiz_data;
+$submissionwidget = new distributedquiz_data(new stdClass());
 echo $output->header();
 echo $output->render($submissionwidget);
-echo $output->footer();
+//echo $output->footer();
 
 
 
