@@ -21,15 +21,3 @@
  * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Distributed Quiz observer class.
- *
- * @package    mod_distributedquiz
- */
-class mod_distributedquiz_observer {
-    
-    
-}
