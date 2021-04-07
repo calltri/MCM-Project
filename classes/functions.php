@@ -30,13 +30,15 @@ class mod_distributedquiz_functions {
      * $quizid
      */
     public static function send_notification ($quizid) {
+        GLOBAL $USER;
+        
         $message = new \core\message\message();
-        $message->component = 'mod_distributed_quiz'; // Your plugin's name
+        $message->component = get_string('pluginname', 'distributedquiz'); // Your plugin's name
         $message->name = 'created'; // Your notification name from message.php
         $message->userfrom = core_user::get_noreply_user(); // If the message is 'from' a specific user you can set them here
-        $message->userto = $user;
-        $message->subject = get_string('quizcreatednotificationmessage', 'distributed_quiz');
-        $message->fullmessage = get_string('quizcreatednotificationmessage', 'distributed_quiz');
+        $message->userto = $USER;
+        $message->subject = get_string('quizcreatednotificationsubject', 'distributedquiz');
+        $message->fullmessage = get_string('quizcreatednotificationmessage', 'distributedquiz');
         //$message->fullmessageformat = FORMAT_MARKDOWN;
         //$message->fullmessagehtml = '<p>message body</p>';
         $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message

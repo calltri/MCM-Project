@@ -65,7 +65,7 @@ $functions->send_notification(2);
 $output = $PAGE->get_renderer('mod_distributedquiz');
 $submissionwidget = new quiz_data;
 echo $output->header();
-echo $output->render();
+echo $output->render($submissionwidget);
 echo $output->footer();
 
 

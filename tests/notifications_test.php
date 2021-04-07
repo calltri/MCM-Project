@@ -46,7 +46,7 @@ class mod_distributedquiz_notifications_testcase extends advanced_testcase {
 
     // Write the tests here as public funcions.
     public function test_send_notification_basic() {
-        $functions = new block_distributedquiz_functions;
+        $functions = new mod_distributedquiz_functions;
         $this->preventResetByRollback();
         $sink = $this->redirectMessages();
         //... code that is sending messages
