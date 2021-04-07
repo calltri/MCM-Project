@@ -42,7 +42,7 @@ class mod_distributedquiz_functions {
         //$message->fullmessageformat = FORMAT_MARKDOWN;
         //$message->fullmessagehtml = '<p>message body</p>';
         $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message
-        $message->contexturl = (new \moodle_url(get_string('quizurl', 'distributed_quiz', $quizid)))->out(false); // A relevant URL for the notification
+        $message->contexturl = (new \moodle_url(get_string('quizurl', 'distributedquiz', $quizid)))->out(false); // A relevant URL for the notification
         $message->contexturlname = 'Course list'; // Link title explaining where users get to for the contexturl
         
         

@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['pluginname'] = 'Distributed Quiz';
 $string['distributedquiz'] = 'Distributed Quiz';
 $string['distributedquizname'] = 'Distributed Quiz';
+$string['pluginadministrator'] = 'Tristan Call';
 $string['distributedquizplural'] = 'Distributed Quizes';
 
 $string['messageprovider:created'] = 'Notificatin of quiz creation';
