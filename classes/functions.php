@@ -28,6 +28,7 @@ class mod_distributedquiz_functions {
      * Sends out a notification 
      * 
      * $quizid
+         * TODO ITS A PERMISSION ISSUE!!!!!!
      */
     public static function send_notification ($quizid) {
         GLOBAL $USER;
