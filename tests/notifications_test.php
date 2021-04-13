@@ -50,7 +50,7 @@ class mod_distributedquiz_notifications_testcase extends advanced_testcase {
         $this->preventResetByRollback();
         $sink = $this->redirectMessages();
         //... code that is sending messages
-        $functions->send_notification(1);
+        $functions->send_notification(1, 2);
         
         $messages = $sink->get_messages();
         $this->assertEquals(1, count($messages));

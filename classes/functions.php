@@ -28,16 +28,17 @@ class mod_distributedquiz_functions {
      * Sends out a notification 
      * 
      * $quizid
+     * $userid
          * TODO ITS A PERMISSION ISSUE!!!!!!
      */
-    public static function send_notification ($quizid) {
-        GLOBAL $USER;
+    public static function send_notification ($quizid, $userid) {
+        global $DB;
         
         $message = new \core\message\message();
         $message->component = get_string('pluginname', 'distributedquiz'); // Your plugin's name
         $message->name = 'created'; // Your notification name from message.php
         $message->userfrom = core_user::get_noreply_user(); // If the message is 'from' a specific user you can set them here
-        $message->userto = $USER;
+        $message->userto = $DB->get_record('user', array('id' => $userid));
         $message->subject = get_string('quizcreatednotificationsubject', 'distributedquiz');
         $message->fullmessage = get_string('quizcreatednotificationmessage', 'distributedquiz');
         //$message->fullmessageformat = FORMAT_MARKDOWN;
@@ -51,4 +52,11 @@ class mod_distributedquiz_functions {
         $messageid = message_send($message);
     }
     
+    public static function send_notifications_to_all_students($quizid, $include_admins=false) {
+//        $groups = $DB->get_records('groups', array('courseid' => $cid));
+//        $groupdataarray = [];
+//        foreach ($groups as $group) {
+//            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
+//        }
+    }
 }

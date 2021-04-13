@@ -28,6 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 $messageproviders = [
 
     'created' => array(
-        'capability' => 'mod/quiz:emailnotifysubmission'
+        'capability' => 'mod/quiz:emailnotifysubmission',
+        'defaults' => [
+              'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN + MESSAGE_DEFAULT_LOGGEDOFF,
+              'email' => MESSAGE_PERMITTED 
+          ]
     ),
 ];

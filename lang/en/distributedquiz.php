@@ -35,7 +35,7 @@ $string['distributedquizname'] = 'Distributed Quiz';
 $string['pluginadministration'] = 'Tristan Call';
 $string['distributedquiznameplural'] = 'Distributed Quizzes';
 
-$string['messageprovider:created'] = 'Notificatin of quiz creation';
+$string['messageprovider:created'] = 'Notification of quiz creation';
 $string['modulename'] = 'Distributed Quiz';
 $string['modulenameplural'] = 'Distributed Quizzes';
 
