@@ -21,6 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+require(__DIR__.'/../../config.php');
 
 class mod_distributedquiz_functions {
     
@@ -29,7 +30,7 @@ class mod_distributedquiz_functions {
      * 
      * $quizid
      * $userid
-         * TODO ITS A PERMISSION ISSUE!!!!!!
+         * TODO Test on server where a proper email output is configured
      */
     public static function send_notification ($quizid, $userid) {
         global $DB;
@@ -41,7 +42,7 @@ class mod_distributedquiz_functions {
         $message->userto = $DB->get_record('user', array('id' => $userid));
         $message->subject = get_string('quizcreatednotificationsubject', 'distributedquiz');
         $message->fullmessage = get_string('quizcreatednotificationmessage', 'distributedquiz');
-        //$message->fullmessageformat = FORMAT_MARKDOWN;
+        $message->fullmessageformat = FORMAT_MARKDOWN;
         //$message->fullmessagehtml = '<p>message body</p>';
         $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message
         $message->contexturl = (new \moodle_url(get_string('quizurl', 'distributedquiz', $quizid)))->out(false); // A relevant URL for the notification
@@ -59,4 +60,5 @@ class mod_distributedquiz_functions {
 //            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
 //        }
     }
+
 }

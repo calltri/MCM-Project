@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 # distributedquizfieldset
 
 
-$string['pluginname'] = 'Distributed Quiz';
+$string['pluginname'] = 'mod_distributedquiz';
 $string['distributedquizname'] = 'Distributed Quiz';
 $string['pluginadministration'] = 'Tristan Call';
 $string['distributedquiznameplural'] = 'Distributed Quizzes';
