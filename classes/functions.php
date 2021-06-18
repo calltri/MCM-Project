@@ -21,7 +21,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require(__DIR__.'/../../config.php');
+require(__DIR__.'/../../../config.php');
 
 class mod_distributedquiz_functions {
     

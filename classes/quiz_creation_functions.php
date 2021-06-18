@@ -21,13 +21,64 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require(__DIR__.'/../../config.php');
+require(__DIR__.'/../../../config.php');
 
 class mod_distributedquiz_quiz_creation_functions {
     
     
-    public static function create_quiz() {
+    public static function create_quiz($course) {
+        global $DB;
+        $starttime = 1624028400;
+        $endtime = 125000000;
+//        $newquiz = self::define_quiz_form($starttime, $endtime);
+//        $id = quiz_add_instance($newquiz);
+//        $module = $DB->get_record($quiz, array('id' => $id));
+//        add_moduleinfo($module, $course);
         
+    }
+    
+    public static function define_quiz_form($starttime, $endtime) {
+        $quiz = new stdClass();
+        $quiz->name = 'distributed';
+        $quiz->intro = null;
+        $quiz->introformat = 1;
+        $quiz->timeopen = $starttime;
+        $quiz->timeclose = $endtime;
+        $quiz->timelimit = 0;
+        $quiz->overduehandling = 'autosubmit';
+        $quiz->graceperiod = 0;
+        $quiz->preferredbehaviour = 'deferredfeedback';
+        $quiz->canredoquestions = 0;
+        $quiz->attempts = 1;
+        $quiz->attemptonlast = 0;
+        $quiz->grademethod = 1;
+        $quiz->decimalpoints = 2;
+        $quiz->questiondecimalpoints = -1;
+        $quiz->reviewattempt = 69904;
+        $quiz->reviewcorrectness = 'autosubmit';
+        $quiz->reviewmarks = 4368;
+        $quiz->reviewspecificfeedback = 4368;
+        $quiz->reviewregularfeedback = 4368;
+        $quiz->reviewrightanswer = 4368;
+        $quiz->reviewoverallfeedback = 4368;
+        $quiz->questionsperpage = 1;
+        $quiz->navmethod = 'free';
+        $quiz->shuffleanswers = 1;
+        $quiz->sumgrades = 0.0;
+        $quiz->grade = 10.0;
+        $quiz->timecreated = 0; //overwritten in quiz_add_instance
+        $quiz->timemodified = 0;
+        // Some were blank so I didn't put them?
+        $quiz->delay1 = 0;
+        $quiz->delay2 = 0;
+        $quiz->showuserpicture = 0;
+        $quiz->showblocks = 0;
+        $quiz->completionattemptsexhausted = 0;
+        $quiz->completionpass = 0;
+        $quiz->completionminattempts = 0;
+        $quiz->allowofflineattempts = 0;
+        return $quiz;
+       
     }
     
     /*
@@ -60,9 +111,16 @@ class mod_distributedquiz_quiz_creation_functions {
                 WHERE id = ?";
         $used = $DB->get_records_sql($sql, array($id));
         
+        // Grab the right quiz
         $chosen = self::get_random_nonused_option($valid_options, $used);
+        $sql = "SELECT *
+                FROM question
+                WHERE id = ?";
+        $chosen = $DB->get_records_sql($sql, array($chosen));
         return $chosen;
         
     }
+    // TODO TEST
+    // Need to wait until create database first
 }
     
