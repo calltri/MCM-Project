@@ -21,7 +21,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require(__DIR__.'/../../../config.php');
 
 class mod_distributedquiz_functions {
     
@@ -54,11 +53,11 @@ class mod_distributedquiz_functions {
     }
     
     public static function send_notifications_to_all_students($quizid, $include_admins=false) {
-//        $groups = $DB->get_records('groups', array('courseid' => $cid));
-//        $groupdataarray = [];
-//        foreach ($groups as $group) {
-//            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
-//        }
+        $groups = $DB->get_records('groups', array('courseid' => $cid));
+        $groupdataarray = [];
+        foreach ($groups as $group) {
+            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
+        }
     }
 
 }

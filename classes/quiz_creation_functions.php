@@ -21,7 +21,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require(__DIR__.'/../../../config.php');
 
 class mod_distributedquiz_quiz_creation_functions {
     
@@ -30,10 +29,10 @@ class mod_distributedquiz_quiz_creation_functions {
         global $DB;
         $starttime = 1624028400;
         $endtime = 125000000;
-//        $newquiz = self::define_quiz_form($starttime, $endtime);
-//        $id = quiz_add_instance($newquiz);
-//        $module = $DB->get_record($quiz, array('id' => $id));
-//        add_moduleinfo($module, $course);
+        $newquiz = self::define_quiz_form($starttime, $endtime);
+        $id = quiz_add_instance($newquiz);
+        $module = $DB->get_record($quiz, array('id' => $id));
+        add_moduleinfo($module, $course);
         
     }
     

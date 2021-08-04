@@ -37,7 +37,7 @@ class mod_distributedquiz_renderer extends plugin_renderer_base {
      * @return string The content to be displayed in the block.
      */
     protected function render_distributedquiz_data(distributedquiz_data $myquiz) {
-        $this->output = "Hello";
+        $this->output = strval(__DIR__);
         return $this->output;
     }
     
