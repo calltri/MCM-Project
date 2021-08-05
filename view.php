@@ -58,7 +58,7 @@ $PAGE->set_context($modulecontext);
 //$functions = new mod_distributedquiz_functions;
 //$functions->send_notification(2, 2);
 $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
-$quizfunctions->create_quiz($cm);
+$quizfunctions->create_quiz($cm->id);
 
 //echo $OUTPUT->header();
 //echo $OUTPUT->box('This is working!!');

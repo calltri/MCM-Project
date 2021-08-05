@@ -31,7 +31,7 @@ class mod_distributedquiz_quiz_creation_functions {
         $endtime = 125000000;
         $newquiz = self::define_quiz_form($starttime, $endtime);
         $id = quiz_add_instance($newquiz);
-        $module = $DB->get_record($quiz, array('id' => $id));
+        $module = $DB->get_record($newquiz, array('id' => $id));
         add_moduleinfo($module, $course);
         
     }
@@ -39,7 +39,7 @@ class mod_distributedquiz_quiz_creation_functions {
     public static function define_quiz_form($starttime, $endtime) {
         $quiz = new stdClass();
         $quiz->name = 'distributed';
-        $quiz->intro = null;
+        $quiz->intro = "";
         $quiz->introformat = 1;
         $quiz->timeopen = $starttime;
         $quiz->timeclose = $endtime;
@@ -67,7 +67,10 @@ class mod_distributedquiz_quiz_creation_functions {
         $quiz->grade = 10.0;
         $quiz->timecreated = 0; //overwritten in quiz_add_instance
         $quiz->timemodified = 0;
-        // Some were blank so I didn't put them?
+        // When inserting quiz the code assigns quiz->password from quiz->quizpassword
+        $quiz->quizpassword = "";
+        $quiz->subnet = '';
+        $quiz->browsersecurity = '-';
         $quiz->delay1 = 0;
         $quiz->delay2 = 0;
         $quiz->showuserpicture = 0;
