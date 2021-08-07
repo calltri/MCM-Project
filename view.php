@@ -58,6 +58,7 @@ $PAGE->set_context($modulecontext);
 //$functions = new mod_distributedquiz_functions;
 //$functions->send_notification(2, 2);
 $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
+echo("<script>console.log(". json_encode($cm->id, JSON_HEX_TAG) .");</script>");
 $quizfunctions->create_quiz($cm->id);
 
 //echo $OUTPUT->header();
