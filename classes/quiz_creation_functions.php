@@ -31,24 +31,21 @@ class mod_distributedquiz_quiz_creation_functions {
         $endtime = 125000000;
         $newquiz = self::define_quiz_form($starttime, $endtime, $course);
         $id = quiz_add_instance($newquiz);
-        $module = $DB->get_record($newquiz, array('id' => $id));
+        echo("<script>console.log(". json_encode($id, JSON_HEX_TAG) .");</script>");
+        $module = $DB->get_record('quiz', array('id' => $id));
         echo("<script>console.log(". json_encode($module, JSON_HEX_TAG) .");</script>");
         add_moduleinfo($module, $course);
-        /*
-         * These modify 3 tables. In course modules it should be modifying the quiz instance
-         * But instead its modifying the distributedquiz instance to point to the quiz. Somehow
-         * Also course is being set to 0 somehow
-         */
         
     }
     
     public static function define_quiz_form($starttime, $endtime, $course) {
         $quiz = new stdClass();
-        // quiz is currently coursemodule 3. Different handling may be required in other courses
+        // TODO quiz is currently coursemodule 3. Different handling may be required in other courses
         $quiz->coursemodule = 3;
         $quiz->name = 'distributed';
         $quiz->intro = "";
         $quiz->introformat = 1;
+        $quiz->course = $course;
         $quiz->timeopen = $starttime;
         $quiz->timeclose = $endtime;
         $quiz->timelimit = 0;
