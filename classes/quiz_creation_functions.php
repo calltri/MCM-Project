@@ -19,34 +19,51 @@
  * Date Created: 1/25/20
  * Last Updated: 1/25/20
  */
-
+require_once(__DIR__.'/../../../config.php');
+require_once(__DIR__.'/../../../course/modlib.php');
 defined('MOODLE_INTERNAL') || die();
 
 class mod_distributedquiz_quiz_creation_functions {
     
     
-    public static function create_quiz($course) {
+    /*
+     * Function to create a quiz in a course/section
+     * @params courseid
+     * @params section - Should be the same as the corresponding distributedquiz
+     */
+    public static function create_quiz($courseid, $section) {
         global $DB;
-        $starttime = 1624028400;
         $endtime = 125000000;
-        $newquiz = self::define_quiz_form($starttime, $endtime, $course);
-        $id = quiz_add_instance($newquiz);
-        echo("<script>console.log(". json_encode($id, JSON_HEX_TAG) .");</script>");
-        $module = $DB->get_record('quiz', array('id' => $id));
-        echo("<script>console.log(". json_encode($module, JSON_HEX_TAG) .");</script>");
+        $moduleid = $DB->get_record_sql('SELECT id FROM {modules} WHERE name = ?;',
+                array('name' => 'quiz')); 
+        $module = self::define_quiz_form($endtime, $courseid, $moduleid->id, $section);
+        
+        $course = $DB->get_record('course', array('id' => $courseid));
         add_moduleinfo($module, $course);
         
     }
     
-    public static function define_quiz_form($starttime, $endtime, $course) {
+    /*
+     * Creates a quiz object to pass to quiz_add_instance
+     * @params $starttime
+     * @params $endtime
+     * @params $course(id)
+     * @params $coursemodule
+     * @return quiz stdClass
+     */
+    public static function define_quiz_form($endtime, $course, $moduleid, $section) {
         $quiz = new stdClass();
         // TODO quiz is currently coursemodule 3. Different handling may be required in other courses
         $quiz->coursemodule = 3;
-        $quiz->name = 'distributed';
+        
+        date_default_timezone_set('PST');
+        $name = date('m:d:y h:m:s');
+        echo("<script>console.log(". json_encode($name, JSON_HEX_TAG) .");</script>");
+        $quiz->name = $name;
         $quiz->intro = "";
         $quiz->introformat = 1;
         $quiz->course = $course;
-        $quiz->timeopen = $starttime;
+        $quiz->timeopen = time();
         $quiz->timeclose = $endtime;
         $quiz->timelimit = 0;
         $quiz->overduehandling = 'autosubmit';
@@ -84,6 +101,14 @@ class mod_distributedquiz_quiz_creation_functions {
         $quiz->completionpass = 0;
         $quiz->completionminattempts = 0;
         $quiz->allowofflineattempts = 0;
+        
+        $quiz->modulename = 'quiz';
+        
+        $quiz->module = $moduleid;
+        $quiz->visible = 1;
+        $quiz->visibleoncoursepage = 1;
+        $quiz->visibleold = 1;
+        $quiz->section = $section;
         return $quiz;
        
     }
