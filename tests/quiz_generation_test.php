@@ -45,5 +45,11 @@ defined('MOODLE_INTERNAL') || die();
 class mod_distributedquiz_quiz_generation_testcase extends advanced_testcase {
 
     // Write the tests here as public funcions.
+    public function test_create_quiz() {
+//        $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
+//        //echo("<script>console.log(". json_encode($cm->id, JSON_HEX_TAG) .");</script>");
+//        
+//        $quizfunctions->create_quiz(1, 1);
+    }
 
 }

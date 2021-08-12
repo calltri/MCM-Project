@@ -16,8 +16,8 @@
 
 /*
  * Author: Tristan Call
- * Date Created: 1/25/20
- * Last Updated: 1/25/20
+ * Date Created: 1/25/21
+ * Last Updated: 8/10/21
  */
 require_once(__DIR__.'/../../../config.php');
 require_once(__DIR__.'/../../../course/modlib.php');
@@ -25,21 +25,58 @@ defined('MOODLE_INTERNAL') || die();
 
 class mod_distributedquiz_quiz_creation_functions {
     
+    public static function set_future_quiz_creation($runtime, $moduleid) {
+        $task = new generate_quiz();
+        $task->set_custom_data(array(
+           'course_module_id' => $moduleid,
+        ));
+        $task->set_next_run_time($runtime);
+        \core\task\manager::queue_adhoc_task($task);
+    }
+    
+    public static function fully_define_quiz($coursemoduleid) {
+        global $DB;
+        // Get required information from the distributed quiz instance
+        $sql = 'select course, section, groupingid, instance '
+                . 'from {course_modules} ' 
+                . 'where id = ?;';
+        $records = $DB->get_record_sql($sql, array('id' => $coursemoduleid));
+        $course = $records->course;
+        $section = $records->section;
+        $groupingid = $records->groupingid;
+        $instance = $records->instance;
+        
+        $newmodule = self::create_quiz($course, $section, $groupingid);
+                
+        // update subquizzes table
+        $DB->insert_record('subquizzes', array(
+            'distributedquiz_id' => $instance,
+            'quiz_id' => $newmodule->id,
+            'creation_time' => $newmodule->timecreated,
+        ));
+        //TODO assign questions to quiz
+        //TODO update questions used
+    }
     
     /*
      * Function to create a quiz in a course/section
      * @params courseid
      * @params section - Should be the same as the corresponding distributedquiz
+     * @return updated module object
      */
-    public static function create_quiz($courseid, $section) {
+    public static function create_quiz($courseid, $section, $groupnum = null) {
         global $DB;
         $endtime = 125000000;
         $moduleid = $DB->get_record_sql('SELECT id FROM {modules} WHERE name = ?;',
                 array('name' => 'quiz')); 
-        $module = self::define_quiz_form($endtime, $courseid, $moduleid->id, $section);
+        
+        $module = self::define_quiz_form($endtime, $courseid, $moduleid->id, $section, $groupnum);
         
         $course = $DB->get_record('course', array('id' => $courseid));
-        add_moduleinfo($module, $course);
+        $newmodule = add_moduleinfo($module, $course);
+        
+        
+        return $newmodule;
         
     }
     
@@ -51,13 +88,10 @@ class mod_distributedquiz_quiz_creation_functions {
      * @params $coursemodule
      * @return quiz stdClass
      */
-    public static function define_quiz_form($endtime, $course, $moduleid, $section) {
-        $quiz = new stdClass();
-        // TODO quiz is currently coursemodule 3. Different handling may be required in other courses
-        $quiz->coursemodule = 3;
-        
+    public static function define_quiz_form($endtime, $course, $moduleid, $section, $groupnum = null) {
+        $quiz = new stdClass();        
         date_default_timezone_set('PST');
-        $name = date('m:d:y h:m:s');
+        $name = date('y:m:d h:m:s');
         echo("<script>console.log(". json_encode($name, JSON_HEX_TAG) .");</script>");
         $quiz->name = $name;
         $quiz->intro = "";
@@ -101,7 +135,6 @@ class mod_distributedquiz_quiz_creation_functions {
         $quiz->completionpass = 0;
         $quiz->completionminattempts = 0;
         $quiz->allowofflineattempts = 0;
-        
         $quiz->modulename = 'quiz';
         
         $quiz->module = $moduleid;
@@ -109,8 +142,17 @@ class mod_distributedquiz_quiz_creation_functions {
         $quiz->visibleoncoursepage = 1;
         $quiz->visibleold = 1;
         $quiz->section = $section;
+        // Add group number if applicable
+        if ($groupnum != null) {
+            $quiz->groupmode = 1;
+            $quiz->groupingid = $groupnum;
+        }
         return $quiz;
        
+    }
+    
+    public static function assign_questions_to_quiz($quizid) {
+        
     }
     
     /*
@@ -154,5 +196,22 @@ class mod_distributedquiz_quiz_creation_functions {
     }
     // TODO TEST
     // Need to wait until create database first
+
+    /* 
+     * Generates random quiz creation times based on a number of factors
+     * @param startcreation hour
+     * @param endcreation
+     * @param makequiztime
+     * @param numquestions
+     * @return list of all quiz creation times
+     */
+    public static function determine_creation_times($startcreation, $endcreation, $makequiztime, $numquestions) {
+        
+    }
+    
+    private static function randomize_creation_times() {
+            
+    }
+    
 }
     
