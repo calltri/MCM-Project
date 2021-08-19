@@ -59,5 +59,22 @@ class mod_distributedquiz_functions {
             $groupdataarray[] = $functions->get_group_data($group, $start, $end);
         }
     }
+    
+    /* 
+     * Generates random quiz creation times based on a number of factors
+     * Note: 
+     * @param startcreation hour
+     * @param endcreation
+     * @param makequiztime
+     * @param numquestions
+     * @return list of all quiz creation times
+     */
+    public static function determine_creation_times($startcreation, $endcreation, $makequiztime, $numquestions) {
+        
+    }
+    
+    private static function randomize_creation_times() {
+            
+    }
 
 }

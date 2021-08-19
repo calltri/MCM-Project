@@ -51,5 +51,16 @@ class mod_distributedquiz_quiz_generation_testcase extends advanced_testcase {
 //        
 //        $quizfunctions->create_quiz(1, 1);
     }
+    
+    public function test_get_random_question() {
+        // Instructions:
+        // Spawn a distributed quiz and a few questions in a category
+        // Grab their id and category name
+        // Make sure the returned id is one of those questions 
+        //
+        $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
+        $quizfunctions(21, 'Test1.0');
+        
+    }
 
 }

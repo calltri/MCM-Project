@@ -35,13 +35,22 @@ $string['distributedquizname'] = 'Distributed Quiz';
 $string['pluginadministration'] = 'Tristan Call';
 $string['distributedquiznameplural'] = 'Distributed Quizzes';
 
+$string['numberofquestions_help'] = 'These will be asked at a rate of 1 per day. '
+        . 'If you choose more questions than exist in the quiz category, the remainder won\'t '
+        . 'be created.';
 $string['messageprovider:created'] = 'Notification of quiz creation';
 $string['modulename'] = 'Distributed Quiz';
 $string['modulenameplural'] = 'Distributed Quizzes';
 
+$string['questionnumberquestion'] = 'How many questions should be asked';
 $string['quizcreatednotificationmessage'] = 'A quiz has been created. Please select the link to take the quiz promptly';
 $string['quizcreatednotificationsubject'] = 'Quiz Created';
+$string['quizcreationduration'] = "Select the duration of time during which quizzes will be randomly generated";
+$string['quizopen'] = "Open the quiz";
 $string['quizurl'] = '/mod/assign/view.php?id={$a}';
+
+$string['timing'] = 'Timing';
+$string['timelimit'] = 'The duration of time the quiz will be open, starting from when the quiz can first be created';
 
 # Placeholders to get rid of debug errors
 $string['distributedquizsettings'] = 'These are settings';

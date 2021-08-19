@@ -65,11 +65,43 @@ class mod_distributedquiz_mod_form extends moodleform_mod {
         } else {
             $this->add_intro_editor();
         }
+        
+        $contexts   = array(
+            '0' => new stdClass,
+            '1' => new stdClass,
+            '2' => new stdClass,
+        );
+        $currentcat   = 0;
+        
+        $mform->addElement('questioncategory', 'category', get_string('parentcategory', 'question'),
+                array('contexts' => $contexts, 'top' => true, 'currentcat' => $currentcat, 'nochildrenof' => $currentcat));
+        $mform->setType('category', PARAM_SEQUENCE);
+        if (question_is_only_child_of_top_category_in_context($currentcat)) {
+            $mform->hardFreeze('category');
+        }
+        $mform->addHelpButton('category', 'parentcategory', 'question');
+        
+        
 
         // Adding the rest of mod_distributedquiz settings, spreading all them into this fieldset
         // ... or adding more fieldsets ('header' elements) if needed for better logic.
         $mform->addElement('static', 'label1', 'distributedquizsettings', get_string('distributedquizsettings', 'mod_distributedquiz'));
-        $mform->addElement('header', 'distributedquizfieldset', get_string('distributedquizfieldset', 'mod_distributedquiz'));
+        //$mform->addElement('header', 'distributedquizfieldset', get_string('distributedquizfieldset', 'mod_distributedquiz'));
+        
+        // Add Start date for the quiz
+        $mform->addElement('header', 'timing', get_string('timing', 'mod_distributedquiz'));
+        $mform->addElement('date_selector', 'timeopen', get_string('quizopen', 'mod_distributedquiz'));
+        $mform->addElement('duration', 'creationduration', get_string('quizcreationduration', 'mod_distributedquiz'));
+        $mform->addElement('duration', 'timelimit', get_string('timelimit', 'mod_distributedquiz'));
+        
+        // Get number
+        $attemptoptions = array('0' => get_string('unlimited'));
+        for ($i = 1; $i <= 40; $i++) {
+            $attemptoptions[$i] = $i;
+        }
+        $mform->addElement('select', 'numberofquestions', get_string('questionnumberquestion', 'mod_distributedquiz'),
+                $attemptoptions);
+        $mform->addHelpButton('numberofquestions', 'numberofquestions', 'mod_distributedquiz');
 
         // Add standard grading elements.
         $this->standard_grading_coursemodule_elements();

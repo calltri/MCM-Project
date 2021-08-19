@@ -59,7 +59,7 @@ $PAGE->set_context($modulecontext);
 //$functions->send_notification(2, 2);
 $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
 //echo("<script>console.log(". json_encode($cm->id, JSON_HEX_TAG) .");</script>");
-$quizfunctions->fully_define_quiz(21);
+//$quizfunctions->fully_define_quiz(21);
 
 //echo $OUTPUT->header();
 //echo $OUTPUT->box('This is working!!');

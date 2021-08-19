@@ -36,13 +36,14 @@ class mod_distributedquiz_quiz_creation_functions {
     
     public static function fully_define_quiz($coursemoduleid) {
         global $DB;
+        // Seed random number generator
         // Get required information from the distributed quiz instance
         $sql = 'select course, section, groupingid, instance '
                 . 'from {course_modules} ' 
                 . 'where id = ?;';
         $records = $DB->get_record_sql($sql, array('id' => $coursemoduleid));
         $course = $records->course;
-        $section = $records->section;
+        $section = $records->section - 1;
         $groupingid = $records->groupingid;
         $instance = $records->instance;
         
@@ -54,8 +55,9 @@ class mod_distributedquiz_quiz_creation_functions {
             'quiz_id' => $newmodule->id,
             'creation_time' => $newmodule->timecreated,
         ));
-        //TODO assign questions to quiz
-        //TODO update questions used
+        
+        self::assign_questions_to_quiz($instance, $newmodule->id);
+        
     }
     
     /*
@@ -151,8 +153,48 @@ class mod_distributedquiz_quiz_creation_functions {
        
     }
     
-    public static function assign_questions_to_quiz($quizid) {
+    /*
+     * Assigns questions to a quiz formed from a distributed quiz
+     * @param quizid
+     */
+    public static function assign_questions_to_quiz($dbquizid, $quizid) {
+        global $DB;
+        // Grab an unused question
+        $category = self::get_distributed_quiz_category($dbquizid);
+        $question = self::get_random_question($dbquizid, $category);
         
+        // Insert into appropriate databases
+        if ($question != null) {
+            $DB->insert_record('used_questions', array('distributedquiz_id' => $dbquizid,
+                'question_id' => $question->id));
+            $DB->insert_record('quiz_slots', array(
+                'quizid' => $quizid,
+                'questionid' => $question->id,
+                'questioncategoryid' => $category,
+                'slot' => 1,
+                'requireprevious' => 0,
+                'maxmark' => 1,
+                'page' => 1,
+            ));
+        }
+        else {
+            echo("<script>console.log(". json_encode("Error, no more questions", JSON_HEX_TAG) .");</script>");
+        }
+    }
+    
+    /*
+     * Gets the category of a given distributedquiz coursemoduleid
+     * @param $coursemoduleid
+     */
+    public static function get_distributed_quiz_category($id) {
+        global $DB;
+        $sql = 'select dq.category'
+                . 'from {distributedquiz} dq'
+                . 'where dq.id = ?';
+        //$category = $DB->get_record_sql($sql, (array('id' => $id)));
+        //return $category->category;
+        // TODO put category in distributed quiz so can do this
+        return 9;
     }
     
     /*
@@ -161,10 +203,25 @@ class mod_distributedquiz_quiz_creation_functions {
      * @param used = used questions, array of
      * @return $chosen
      */
-    public static function get_random_nonused_option($valid_options, $used) {
-        $nonused = array_diff_assoc($valid_options, $used);
+    public static function get_random_nonused_option($validoptions, $used) {
+        // Find unused, valid questions
+        $nonused = [];
+        foreach ($validoptions as $option) {
+            $unused = false;
+            foreach ($used as $notvalid) {
+                if ($option->id == $notvalid->question_id) {
+                    $unused = true;
+                    break;
+                }
+            }
+            if ($unused == false) {
+                array_push($nonused, $option);
+            }
+        }
+        
+        //choose one randomly
         $chosen = array_rand($nonused);
-        return $chosen;
+        return $nonused[$chosen]->id;
     }
     
     /*
@@ -176,42 +233,29 @@ class mod_distributedquiz_quiz_creation_functions {
         global $DB;
         
         // Grab options and used options
-        $sql = "SELECT id
-                FROM question
-                WHERE category = ?";
-        $valid_options = $DB->get_records_sql($sql, array($category));
-        $sql = "SELECT quiz_id
-                FROM quiz_creation_times
-                WHERE id = ?";
-        $used = $DB->get_records_sql($sql, array($id));
+        $sql = "SELECT q.id
+                FROM {question} q
+                    JOIN {question_categories} qc ON q.category = qc.id
+                WHERE qc.id = ?;";
+        $valid_options = $DB->get_records_sql($sql, array('category' => $category));
+        $sql = "SELECT question_id
+                FROM {used_questions}
+                WHERE distributedquiz_id = ?;";
+        $used = $DB->get_records_sql($sql, array('distributedquiz_id' => $id));
         
         // Grab the right quiz
         $chosen = self::get_random_nonused_option($valid_options, $used);
         $sql = "SELECT *
-                FROM question
-                WHERE id = ?";
-        $chosen = $DB->get_records_sql($sql, array($chosen));
+                FROM {question}
+                WHERE id = ?;";
+        $chosen = $DB->get_record_sql($sql, array('id' => $chosen));
         return $chosen;
         
     }
     // TODO TEST
     // Need to wait until create database first
 
-    /* 
-     * Generates random quiz creation times based on a number of factors
-     * @param startcreation hour
-     * @param endcreation
-     * @param makequiztime
-     * @param numquestions
-     * @return list of all quiz creation times
-     */
-    public static function determine_creation_times($startcreation, $endcreation, $makequiztime, $numquestions) {
-        
-    }
-    
-    private static function randomize_creation_times() {
-            
-    }
+
     
 }
     
