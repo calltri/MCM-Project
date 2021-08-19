@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_distributedquiz';
 $plugin->release = '0.1.0';
-$plugin->version = 2021081700;
+$plugin->version = 2021081904;
 $plugin->requires = 2020110906;
 $plugin->maturity = MATURITY_ALPHA;

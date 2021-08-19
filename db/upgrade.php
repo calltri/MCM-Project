@@ -91,6 +91,79 @@ function xmldb_distributedquiz_upgrade($oldversion) {
         // Distributedquiz savepoint reached.
         upgrade_mod_savepoint(true, 2021081101, 'distributedquiz');
     }
+    
+    if ($oldversion < 2021081900) {
+
+        // Define field category to be added to distributedquiz.
+        $table = new xmldb_table('distributedquiz');
+        $field = new xmldb_field('category', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '1', 'introformat');
+
+        // Conditionally launch add field category.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Distributedquiz savepoint reached.
+        upgrade_mod_savepoint(true, 2021081900, 'distributedquiz');
+    }
+
+     if ($oldversion < 2021081901) {
+
+        // Define field timeopen to be added to distributedquiz.
+        $table = new xmldb_table('distributedquiz');
+        $field = new xmldb_field('timeopen', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'category');
+
+        // Conditionally launch add field timeopen.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Distributedquiz savepoint reached.
+        upgrade_mod_savepoint(true, 2021081901, 'distributedquiz');
+    }
+
+     if ($oldversion < 2021081902) {
+
+        // Define field creationduration to be added to distributedquiz.
+        $table = new xmldb_table('distributedquiz');
+        $field = new xmldb_field('creationduration', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '1', 'timeopen');
+
+        // Conditionally launch add field creationduration.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Distributedquiz savepoint reached.
+        upgrade_mod_savepoint(true, 2021081902, 'distributedquiz');
+    }
+    
+    if ($oldversion < 2021081903) {
+
+        // Define field timelimit to be added to distributedquiz.
+        $table = new xmldb_table('distributedquiz');
+        $field = new xmldb_field('timelimit', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '3600', 'creationduration');
+
+        // Conditionally launch add field timelimit.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Distributedquiz savepoint reached.
+        upgrade_mod_savepoint(true, 2021081903, 'distributedquiz');
+    }
+    
+    if ($oldversion < 2021081904) {
+
+        // Define key categoryfk (foreign) to be added to distributedquiz.
+        $table = new xmldb_table('distributedquiz');
+        $key = new xmldb_key('categoryfk', XMLDB_KEY_FOREIGN, ['category'], 'question_category', ['id']);
+
+        // Launch add key categoryfk.
+        $dbman->add_key($table, $key);
+
+        // Distributedquiz savepoint reached.
+        upgrade_mod_savepoint(true, 2021081904, 'distributedquiz');
+    }
 
 
     return true;
