@@ -29,20 +29,22 @@ defined('MOODLE_INTERNAL') || die();
 # distributedquizsettings
 # distributedquizfieldset
 
-
+$string['categoryfield'] = 'Category';
+$string['categoryfield_help'] = 'Choose the category questions will be selected from';
 $string['pluginname'] = 'mod_distributedquiz';
 $string['distributedquizname'] = 'Distributed Quiz';
 $string['pluginadministration'] = 'Tristan Call';
 $string['distributedquiznameplural'] = 'Distributed Quizzes';
 
+$string['numberofquestions'] = 'How many questions should be asked';
 $string['numberofquestions_help'] = 'These will be asked at a rate of 1 per day. '
-        . 'If you choose more questions than exist in the quiz category, the remainder won\'t '
-        . 'be created.';
+        . 'If you choose more questions than exist in the quiz category, only as '
+        . 'many quizzes as there are questions will be created';
 $string['messageprovider:created'] = 'Notification of quiz creation';
 $string['modulename'] = 'Distributed Quiz';
 $string['modulenameplural'] = 'Distributed Quizzes';
 
-$string['questionnumberquestion'] = 'How many questions should be asked';
+
 $string['quizcreatednotificationmessage'] = 'A quiz has been created. Please select the link to take the quiz promptly';
 $string['quizcreatednotificationsubject'] = 'Quiz Created';
 $string['quizcreationduration'] = "Select the duration of time during which quizzes will be randomly generated";
