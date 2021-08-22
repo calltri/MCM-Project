@@ -79,8 +79,6 @@ class mod_distributedquiz_mod_form extends moodleform_mod {
             context_system::instance(),
         ];
         $currentcat = 0;
-        echo("<script>console.log(". json_encode($course, JSON_HEX_TAG) .");</script>");
-        echo("<script>console.log(". json_encode($contexts, JSON_HEX_TAG) .");</script>");
         
         // Add the 'select category' field
         $mform->addElement('questioncategory', 'category', get_string('categoryfield', 'mod_distributedquiz'),
@@ -97,7 +95,7 @@ class mod_distributedquiz_mod_form extends moodleform_mod {
         
         // Add Start date for the quiz
         $mform->addElement('header', 'timing', get_string('timing', 'mod_distributedquiz'));
-        $mform->addElement('date_selector', 'timeopen', get_string('quizopen', 'mod_distributedquiz'));
+        $mform->addElement('date_time_selector', 'timeopen', get_string('quizopen', 'mod_distributedquiz'));
         $mform->addElement('duration', 'creationduration', get_string('quizcreationduration', 'mod_distributedquiz'));
         $mform->addElement('duration', 'timelimit', get_string('timelimit', 'mod_distributedquiz'));
         

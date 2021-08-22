@@ -59,6 +59,8 @@ function distributedquiz_add_instance($moduleinstance, $mform = null) {
     echo("<script>console.log(". json_encode($mform, JSON_HEX_TAG) .");</script>");
     
     $moduleinstance->timecreated = time();
+    $category = explode(",", $moduleinstance->category);
+    $moduleinstance->category = $category[0];
 
     $id = $DB->insert_record('distributedquiz', $moduleinstance);
 
