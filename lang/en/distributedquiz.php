@@ -25,12 +25,36 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['messageprovider:created'] = 'Notify students that a quiz has been created';
-$string['pluginname'] = 'Distributed Quiz';
-$string['distributedquiz'] = 'Distributed Quiz';
-$string['distributedquizplural'] = 'Distributed Quizes';
+#TODO Add distributedquizname_help
+# distributedquizsettings
+# distributedquizfieldset
 
-$string['quizcreatednotificationsubject'] = 'Quiz Created';
+$string['categoryfield'] = 'Category';
+$string['categoryfield_help'] = 'Choose the category questions will be selected from';
+$string['pluginname'] = 'mod_distributedquiz';
+$string['distributedquizname'] = 'Distributed Quiz';
+$string['pluginadministration'] = 'Tristan Call';
+$string['distributedquiznameplural'] = 'Distributed Quizzes';
+
+$string['numberofquestions'] = 'How many questions should be asked';
+$string['numberofquestions_help'] = 'These will be asked at a rate of 1 per day. '
+        . 'If you choose more questions than exist in the quiz category, only as '
+        . 'many quizzes as there are questions will be created';
+$string['messageprovider:created'] = 'Notification of quiz creation';
+$string['modulename'] = 'Distributed Quiz';
+$string['modulenameplural'] = 'Distributed Quizzes';
+
+
 $string['quizcreatednotificationmessage'] = 'A quiz has been created. Please select the link to take the quiz promptly';
-$string['messageprovider:created'] = 'Notificatin of quiz creation';
+$string['quizcreatednotificationsubject'] = 'Quiz Created';
+$string['quizcreationduration'] = "Select the duration of time during which quizzes will be randomly generated";
+$string['quizopen'] = "Open the quiz";
 $string['quizurl'] = '/mod/assign/view.php?id={$a}';
+
+$string['timing'] = 'Timing';
+$string['timelimit'] = 'The duration of time the quiz will be open, starting from when the quiz can first be created';
+
+# Placeholders to get rid of debug errors
+$string['distributedquizsettings'] = 'These are settings';
+$string['distributedquizfieldset'] = 'What is this';
+$string['distributedquizname_help'] = 'For help email tcall';

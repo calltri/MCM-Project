@@ -42,6 +42,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2021 Tristan Call <tcall@zagmail.gonzaga.edu>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 class mod_distributedquiz_randomization_testcase extends advanced_testcase {
 
     // Write the tests here as public funcions.

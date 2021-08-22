@@ -47,19 +47,31 @@ require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
-$event = \mod_distributedquiz\event\course_module_viewed::create(array(
-    'objectid' => $moduleinstance->id,
-    'context' => $modulecontext
-));
-$event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('distributedquiz', $moduleinstance);
-$event->trigger();
+
 
 $PAGE->set_url('/mod/distributedquiz/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-echo $OUTPUT->header();
 
-echo $OUTPUT->footer();
+//$functions = new mod_distributedquiz_functions;
+//$functions->send_notification(2, 2);
+$quizfunctions = new mod_distributedquiz_quiz_creation_functions;
+//echo("<script>console.log(". json_encode($cm->id, JSON_HEX_TAG) .");</script>");
+//$quizfunctions->fully_define_quiz(21);
+
+//echo $OUTPUT->header();
+//echo $OUTPUT->box('This is working!!');
+//echo $OUTPUT->footer();
+/*
+ * TODO something is messed up with quiz_data?
+ */
+$output = $PAGE->get_renderer('mod_distributedquiz');
+$submissionwidget = new distributedquiz_data(new stdClass());
+echo $output->header();
+echo $output->render($submissionwidget);
+//echo $output->footer();
+
+
+

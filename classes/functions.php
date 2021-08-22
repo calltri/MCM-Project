@@ -22,25 +22,29 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-class mod_distributed_quiz_functions {
+class mod_distributedquiz_functions {
     
         /**
      * Sends out a notification 
      * 
      * $quizid
+     * $userid
+         * TODO Test on server where a proper email output is configured
      */
-    public static function send_notification ($quizid) {
+    public static function send_notification ($quizid, $userid) {
+        global $DB;
+        
         $message = new \core\message\message();
-        $message->component = 'mod_distributed_quiz'; // Your plugin's name
+        $message->component = get_string('pluginname', 'distributedquiz'); // Your plugin's name
         $message->name = 'created'; // Your notification name from message.php
         $message->userfrom = core_user::get_noreply_user(); // If the message is 'from' a specific user you can set them here
-        $message->userto = $user;
-        $message->subject = get_string('quizcreatednotificationmessage', 'distributed_quiz');
-        $message->fullmessage = get_string('quizcreatednotificationmessage', 'distributed_quiz');
+        $message->userto = $DB->get_record('user', array('id' => $userid));
+        $message->subject = get_string('quizcreatednotificationsubject', 'distributedquiz');
+        $message->fullmessage = get_string('quizcreatednotificationmessage', 'distributedquiz');
         $message->fullmessageformat = FORMAT_MARKDOWN;
-        $message->fullmessagehtml = '<p>message body</p>';
+        //$message->fullmessagehtml = '<p>message body</p>';
         $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message
-        $message->contexturl = (new \moodle_url(get_string('quizurl', 'distributed_quiz', $quizid)))->out(false); // A relevant URL for the notification
+        $message->contexturl = (new \moodle_url(get_string('quizurl', 'distributedquiz', $quizid)))->out(false); // A relevant URL for the notification
         $message->contexturlname = 'Course list'; // Link title explaining where users get to for the contexturl
         
         
@@ -48,4 +52,29 @@ class mod_distributed_quiz_functions {
         $messageid = message_send($message);
     }
     
+    public static function send_notifications_to_all_students($quizid, $include_admins=false) {
+        $groups = $DB->get_records('groups', array('courseid' => $cid));
+        $groupdataarray = [];
+        foreach ($groups as $group) {
+            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
+        }
+    }
+    
+    /* 
+     * Generates random quiz creation times based on a number of factors
+     * Note: 
+     * @param startcreation hour
+     * @param endcreation
+     * @param makequiztime
+     * @param numquestions
+     * @return list of all quiz creation times
+     */
+    public static function determine_creation_times($startcreation, $endcreation, $makequiztime, $numquestions) {
+        
+    }
+    
+    private static function randomize_creation_times() {
+            
+    }
+
 }

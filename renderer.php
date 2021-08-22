@@ -15,23 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin message providers are defined here.
+ * The renderer for mod_distributedquiz.
  *
  * @package     mod_distributedquiz
- * @category    message
  * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$messageproviders = [
+class distributedquiz_data implements renderable {
+    public function __construct(stdclass $myquiz) {
+        
+    }
+}
 
-    'created' => array(
-        'capability' => 'mod/quiz:emailnotifysubmission',
-        'defaults' => [
-              'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN + MESSAGE_DEFAULT_LOGGEDOFF,
-              'email' => MESSAGE_PERMITTED 
-          ]
-    ),
-];
+class mod_distributedquiz_renderer extends plugin_renderer_base {
+    /** 
+     * Gets the contents to be displayed 
+     * 
+     * @return string The content to be displayed in the block.
+     */
+    protected function render_distributedquiz_data(distributedquiz_data $myquiz) {
+        $this->output = strval(__DIR__);
+        return $this->output;
+    }
+    
+}

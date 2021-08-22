@@ -14,24 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Plugin message providers are defined here.
- *
- * @package     mod_distributedquiz
- * @category    message
- * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+/*
+ * Author: Tristan Call
+ * Date Created: 8/10/21
+ * Last Updated: 8/10/21
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$messageproviders = [
-
-    'created' => array(
-        'capability' => 'mod/quiz:emailnotifysubmission',
-        'defaults' => [
-              'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN + MESSAGE_DEFAULT_LOGGEDOFF,
-              'email' => MESSAGE_PERMITTED 
-          ]
-    ),
-];
+class generate_quiz extends \core\task\adhoc_task {
+    public function execute() {
+        // Get the custom data.
+         $data = $this->get_custom_data();
+         
+        $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
+        $quizfunctions->create_quiz($data->courseid, $data->sectionid, $data->groupid);
+        
+        
+        //
+        //TODO send notificaiton
+        //$functions = new mod_distributedquiz_functions;
+        //$functions->send_notification(2, 2);
+    }
+}

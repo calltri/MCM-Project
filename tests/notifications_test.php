@@ -45,5 +45,16 @@ defined('MOODLE_INTERNAL') || die();
 class mod_distributedquiz_notifications_testcase extends advanced_testcase {
 
     // Write the tests here as public funcions.
+    public function test_send_notification_basic() {
+        $functions = new mod_distributedquiz_functions;
+        $this->preventResetByRollback();
+        $sink = $this->redirectMessages();
+        //... code that is sending messages
+        $functions->send_notification(1, 2);
+        
+        $messages = $sink->get_messages();
+        $this->assertEquals(1, count($messages));
+        $this->assertEquals($messages[0]->contexturl, '/mod/assign/view.php?id=1');
+    }
 
 }
