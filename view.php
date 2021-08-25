@@ -64,6 +64,7 @@ $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
 //echo $OUTPUT->header();
 //echo $OUTPUT->box('This is working!!');
 //echo $OUTPUT->footer();
+
 /*
  * TODO something is messed up with quiz_data?
  */

@@ -69,12 +69,28 @@ class mod_distributedquiz_functions {
      * @param numquestions
      * @return list of all quiz creation times
      */
-    public static function determine_creation_times($startcreation, $endcreation, $makequiztime, $numquestions) {
-        
-    }
-    
-    private static function randomize_creation_times() {
+    public static function determine_creation_times($startcreation, $creationduration, $numquestions) {
+        $times = [];
+        // Set first time
+        $timezone = new DateTime(core_date::get_server_timezone_object());
+        $timezone->set_timestamp($startcreation);
+                
+        // Create timestamps
+        for ($i = 0; $i < $numquestions; $i++) {
+            // Get current day
+            $day = $timezone->format('D');
             
+            // Make sure is not a weekend
+            if ($day != 'Sat' && $day != 'Sun') {
+                // Add a new random time
+                $time = $timezone->getTimestamp();
+                $time += rand(0, $creationduration);
+                array_push($times, $time);
+            }
+            // Move to next day
+            $timezone->add(new DateInterval('P1D'));
+        }
+        return $times;        
     }
 
 }

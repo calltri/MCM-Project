@@ -46,5 +46,52 @@ defined('MOODLE_INTERNAL') || die();
 class mod_distributedquiz_randomization_testcase extends advanced_testcase {
 
     // Write the tests here as public funcions.
+    public function test_determine_creation_times() {
+        // Test for Wed, 25 Aug 2021 10:00:00 PST
+        $startcreation = 1629910800;
+        $creationduration = 3600;
+        $numquestions = 4;
+        $starttimes = [
+            $creationduration,
+            1629997200,
+            1630083600,
+            1630342800,
+        ];
+        
+        $times = determine_creation_times($startcreation, $creationduration, $numquestions);
+        for ($i = 0; $i < 4; $i++) {
+            // assert values are in the expected times
+            $this->assertGreaterThanOrEqual($starttimes[$i], $times[$i]);
+            $this->assertGreaterThanOrEqual($times[$i], $starttimes[$i] + $creationduration);
+        }
+        
+        
+    }
+    
+        // Write the tests here as public funcions.
+    public function test_determine_creation_times_with_timezones() {
+        // Test for 05 Nov 2021 10:00:00 PST and timezones/weekends
+        $startcreation = 1636131600;
+        $creationduration = 3600;
+        $numquestions = 2;
+        $starttimes = [
+            new DateTime('2021-11-05',core_date::get_user_timezone_object()),
+            new DateTime('2021-11-08',core_date::get_user_timezone_object()),
+        ];
+        $starttimes[0]->setTime(10);
+        $starttimes[1]->setTime(10);
+        
+        
+        $times = determine_creation_times($startcreation, $creationduration, $numquestions);
+        for ($i = 0; $i < 4; $i++) {
+            $teststarttime = $starttimes[$i]->getTimestamp();
+            // assert values are in the expected duration of 10-11 even post daylight savings
+            $this->assertGreaterThanOrEqual($teststarttime, $times[$i]);
+            $this->assertGreaterThanOrEqual($times[$i], $teststarttime + $creationduration);
+        }
+        
+        
+    }
+
 
 }
