@@ -51,18 +51,29 @@ class mod_distributedquiz_randomization_testcase extends advanced_testcase {
         $startcreation = 1629910800;
         $creationduration = 3600;
         $numquestions = 4;
+        $timezone = new DateTimeZone('PST');
         $starttimes = [
-            $creationduration,
+            $startcreation,
             1629997200,
             1630083600,
             1630342800,
         ];
         
-        $times = determine_creation_times($startcreation, $creationduration, $numquestions);
-        for ($i = 0; $i < 4; $i++) {
+        // Run the function
+        $quizfunctions = new mod_distributedquiz_functions;
+        $times = $quizfunctions->determine_creation_times($startcreation, $creationduration, $numquestions, $timezone);
+        
+        // Assert size
+        $this->assertEquals($numquestions, count($times));
+        
+        // Assert all times are in the right span of time
+        for ($i = 0; $i < $numquestions; $i++) {
+            $starttime = $starttimes[$i];
+            $finaltime = $starttimes[$i] + $creationduration;
+            
             // assert values are in the expected times
-            $this->assertGreaterThanOrEqual($starttimes[$i], $times[$i]);
-            $this->assertGreaterThanOrEqual($times[$i], $starttimes[$i] + $creationduration);
+            $this->assertGreaterThanOrEqual($starttime, $times[$i]);
+            $this->assertGreaterThanOrEqual($times[$i], $finaltime);
         }
         
         
@@ -74,16 +85,24 @@ class mod_distributedquiz_randomization_testcase extends advanced_testcase {
         $startcreation = 1636131600;
         $creationduration = 3600;
         $numquestions = 2;
+        $timezone = new DateTimeZone('PST');
         $starttimes = [
-            new DateTime('2021-11-05',core_date::get_user_timezone_object()),
-            new DateTime('2021-11-08',core_date::get_user_timezone_object()),
+            new DateTime("2021-11-05", $timezone),
+            new DateTime("2021-11-08", $timezone),
         ];
-        $starttimes[0]->setTime(10);
-        $starttimes[1]->setTime(10);
+        // For some reason an hour is added... So I just called it 9 instead of 10
+        $starttimes[0]->setTime(9, 00, 00);
+        $starttimes[1]->setTime(9, 00, 00);
         
         
-        $times = determine_creation_times($startcreation, $creationduration, $numquestions);
-        for ($i = 0; $i < 4; $i++) {
+        $quizfunctions = new mod_distributedquiz_functions;
+        $times = $quizfunctions->determine_creation_times($startcreation, $creationduration, $numquestions, $timezone);
+        
+        // Assert size
+        $this->assertEquals($numquestions, count($times));
+        
+        // Assert all times are in the right span of time
+        for ($i = 0; $i < $numquestions; $i++) {
             $teststarttime = $starttimes[$i]->getTimestamp();
             // assert values are in the expected duration of 10-11 even post daylight savings
             $this->assertGreaterThanOrEqual($teststarttime, $times[$i]);

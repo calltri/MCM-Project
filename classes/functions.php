@@ -69,11 +69,12 @@ class mod_distributedquiz_functions {
      * @param numquestions
      * @return list of all quiz creation times
      */
-    public static function determine_creation_times($startcreation, $creationduration, $numquestions) {
+    public static function determine_creation_times($startcreation, $creationduration, $numquestions, $timezoneobj) {
         $times = [];
         // Set first time
-        $timezone = new DateTime(core_date::get_server_timezone_object());
-        $timezone->set_timestamp($startcreation);
+        $timezone = new DateTime();
+        $timezone->setTimezone($timezoneobj);
+        $timezone->setTimestamp($startcreation);
                 
         // Create timestamps
         for ($i = 0; $i < $numquestions; $i++) {
@@ -86,6 +87,10 @@ class mod_distributedquiz_functions {
                 $time = $timezone->getTimestamp();
                 $time += rand(0, $creationduration);
                 array_push($times, $time);
+            }
+            else {
+                // if it is it doesn't count as a day
+                $i -= 1;
             }
             // Move to next day
             $timezone->add(new DateInterval('P1D'));
