@@ -63,6 +63,21 @@ function distributedquiz_add_instance($moduleinstance, $mform = null) {
     $moduleinstance->category = $category[0];
 
     $id = $DB->insert_record('distributedquiz', $moduleinstance);
+    
+    
+    // TODO proper preprocessing on number of questions
+    $numberofquestions = $moduleinstance->numberofquestions;
+    if (is_string($numberofquestions)) {
+        $numberofquestions = 2;
+    }
+    
+    // TODO call function to create ad hoc tasks
+    $func = new mod_distributedquiz_quiz_creation_functions;
+    $func->set_all_future_quizzes($moduleinstance->id, 
+            $moduleinstance->startcreation, 
+            $moduleinstance->creationduration, 
+            $numberofquestions
+    );
 
     return $id;
 }

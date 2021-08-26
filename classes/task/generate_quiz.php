@@ -26,7 +26,7 @@ class generate_quiz extends \core\task\adhoc_task {
          $data = $this->get_custom_data();
          
         $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
-        $quizfunctions->create_quiz($data->courseid, $data->sectionid, $data->groupid);
+        $quizfunctions->fully_define_quiz($data->course_module_id);
         
         
         //

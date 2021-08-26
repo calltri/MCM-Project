@@ -52,21 +52,21 @@ class mod_distributedquiz_functions {
         $messageid = message_send($message);
     }
     
-    public static function send_notifications_to_all_students($quizid, $include_admins=false) {
-        $groups = $DB->get_records('groups', array('courseid' => $cid));
-        $groupdataarray = [];
-        foreach ($groups as $group) {
-            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
-        }
-    }
+//    public static function send_notifications_to_all_students($quizid, $include_admins=false) {
+//        $groups = $DB->get_records('groups', array('courseid' => $cid));
+//        $groupdataarray = [];
+//        foreach ($groups as $group) {
+//            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
+//        }
+//    }
     
     /* 
      * Generates random quiz creation times based on a number of factors
-     * Note: 
-     * @param startcreation hour
-     * @param endcreation
-     * @param makequiztime
+     * Note: all times should be timestamps
+     * @param startcreation 
+     * @param creationduration
      * @param numquestions
+     * @param timezoneobj a DateTimeZone
      * @return list of all quiz creation times
      */
     public static function determine_creation_times($startcreation, $creationduration, $numquestions, $timezoneobj) {
