@@ -61,7 +61,8 @@ class mod_distributedquiz_functions {
 //    }
     
     /* 
-     * Generates random quiz creation times based on a number of factors
+     * Generates random quiz creation times at the given time at $startcreation
+     * in the appropriate time zone within the creationduration
      * Note: all times should be timestamps
      * @param startcreation 
      * @param creationduration
