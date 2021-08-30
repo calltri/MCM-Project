@@ -45,7 +45,7 @@ class mod_distributedquiz_quiz_creation_functions {
      * Note: Schedules a task
      */
     public static function set_future_quiz_creation($runtime, $moduleid) {
-        $task = new generate_quiz();
+        $task = new \mod_distributedquiz\task\generate_quiz();
         $task->set_custom_data(array(
            'course_module_id' => $moduleid,
         ));
@@ -69,10 +69,10 @@ class mod_distributedquiz_quiz_creation_functions {
         $groupingid = $records->groupingid;
         $instance = $records->instance;
         // Grab the quiz duration
-        $quizduration = $DB->get_record_sql('SELECT endtime FROM {distributedquiz} WHERE id = ?',
+        $quizduration = $DB->get_record_sql('SELECT timelimit FROM {distributedquiz} WHERE id = ?',
                 array('id' => $instance));
         
-        $newmodule = self::create_quiz($quizduration, $course, $section, $groupingid);
+        $newmodule = self::create_quiz($quizduration->timelimit, $course, $section, $groupingid);
                 
         // update subquizzes table
         $DB->insert_record('subquizzes', array(
@@ -81,6 +81,7 @@ class mod_distributedquiz_quiz_creation_functions {
             'creation_time' => $newmodule->timecreated,
         ));
         
+        echo("<script>console.log(". json_encode($instance, JSON_HEX_TAG) .");</script>");
         self::assign_questions_to_quiz($instance, $newmodule->id);
         
     }
@@ -214,13 +215,11 @@ class mod_distributedquiz_quiz_creation_functions {
      */
     public static function get_distributed_quiz_category($id) {
         global $DB;
-        $sql = 'select dq.category'
-                . 'from {distributedquiz} dq'
+        $sql = 'select dq.category '
+                . 'from {distributedquiz} dq '
                 . 'where dq.id = ?';
         $category = $DB->get_record_sql($sql, (array('id' => $id)));
-        //return $category->category;
-        // TODO put category in distributed quiz so can do this
-        return $category;
+        return $category->category;
     }
     
     /*
@@ -245,9 +244,14 @@ class mod_distributedquiz_quiz_creation_functions {
             }
         }
         
-        //choose one randomly
-        $chosen = array_rand($nonused);
-        return $nonused[$chosen]->id;
+        //choose one randomly if exists
+        if (count($nonused) != 0) {
+            return [];
+        }
+        else {
+            $chosen = array_rand($nonused);
+            return $nonused[$chosen]->id;
+        }
     }
     
     /*
@@ -263,6 +267,7 @@ class mod_distributedquiz_quiz_creation_functions {
                 FROM {question} q
                     JOIN {question_categories} qc ON q.category = qc.id
                 WHERE qc.id = ?;";
+        echo("<script>console.log(". json_encode($category, JSON_HEX_TAG) .");</script>");
         $valid_options = $DB->get_records_sql($sql, array('category' => $category));
         $sql = "SELECT question_id
                 FROM {used_questions}

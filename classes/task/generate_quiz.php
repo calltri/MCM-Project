@@ -20,12 +20,14 @@
  * Last Updated: 8/10/21
  */
 
+namespace mod_distributedquiz\task;
+
 class generate_quiz extends \core\task\adhoc_task {
     public function execute() {
         // Get the custom data.
          $data = $this->get_custom_data();
          
-        $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
+        $quizfunctions = new \mod_distributedquiz_quiz_creation_functions;
         $quizfunctions->fully_define_quiz($data->course_module_id);
         
         

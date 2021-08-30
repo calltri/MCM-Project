@@ -65,6 +65,13 @@ $quizfunctions = new mod_distributedquiz_quiz_creation_functions;
 //echo $OUTPUT->box('This is working!!');
 //echo $OUTPUT->footer();
 
+$func = new mod_distributedquiz_quiz_creation_functions;
+$func->set_all_future_quizzes(95, 
+        1630281449, 
+        60, 
+        2
+);
+
 /*
  * TODO something is messed up with quiz_data?
  */
