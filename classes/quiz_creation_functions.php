@@ -25,8 +25,34 @@ defined('MOODLE_INTERNAL') || die();
 
 class mod_distributedquiz_quiz_creation_functions {
     
+    /*
+     * Sets up numquestions number of quizzes to occur in the future
+     * @param course moduleid of associated distributedquiz
+     * @param $startcreation time
+     * @param creationduration
+     * @param numquestions
+     */
+    public static function set_all_future_quizzes($moduleid, $startcreation, $creationduration, $numquestions) {
+        $timezone = core_date::get_user_timezone_object();
+        
+        // Calculate times for quizzes
+        $func = new mod_distributedquiz_functions;
+        $times = $func->determine_creation_times($startcreation, $creationduration, $numquestions, $timezone);
+        
+        // Set tasks to create them all
+        for ($i = 0; $i < $numquestions; $i++) {
+            self::set_future_quiz_creation($times[$i], $moduleid);
+        }
+    }
+    
+    /*
+     * Sets an ad hoc generate_quiz task to occur
+     * @param runtime
+     * @param course moduleid
+     * Note: Schedules a task
+     */
     public static function set_future_quiz_creation($runtime, $moduleid) {
-        $task = new generate_quiz();
+        $task = new \mod_distributedquiz\task\generate_quiz();
         $task->set_custom_data(array(
            'course_module_id' => $moduleid,
         ));
@@ -34,6 +60,11 @@ class mod_distributedquiz_quiz_creation_functions {
         \core\task\manager::queue_adhoc_task($task);
     }
     
+    /*
+     * This function creates a quiz from a distributedquiz, updates relevant tables,
+     * and adds questions to those quizzes.
+     * @param coursemoduleid for the distributedquiz 
+     */
     public static function fully_define_quiz($coursemoduleid) {
         global $DB;
         // Seed random number generator
@@ -46,8 +77,11 @@ class mod_distributedquiz_quiz_creation_functions {
         $section = $records->section - 1;
         $groupingid = $records->groupingid;
         $instance = $records->instance;
+        // Grab the quiz duration
+        $quizduration = $DB->get_record_sql('SELECT timelimit FROM {distributedquiz} WHERE id = ?',
+                array('id' => $instance));
         
-        $newmodule = self::create_quiz($course, $section, $groupingid);
+        $newmodule = self::create_quiz($quizduration->timelimit, $course, $section, $groupingid);
                 
         // update subquizzes table
         $DB->insert_record('subquizzes', array(
@@ -62,17 +96,18 @@ class mod_distributedquiz_quiz_creation_functions {
     
     /*
      * Function to create a quiz in a course/section
+     * @params quizduration
      * @params courseid
      * @params section - Should be the same as the corresponding distributedquiz
      * @return updated module object
      */
-    public static function create_quiz($courseid, $section, $groupnum = null) {
+    public static function create_quiz($quizduration, $courseid, $section, $groupnum = null) {
         global $DB;
-        $endtime = 125000000;
+        
         $moduleid = $DB->get_record_sql('SELECT id FROM {modules} WHERE name = ?;',
                 array('name' => 'quiz')); 
         
-        $module = self::define_quiz_form($endtime, $courseid, $moduleid->id, $section, $groupnum);
+        $module = self::define_quiz_form($quizduration, $courseid, $moduleid->id, $section, $groupnum);
         
         $course = $DB->get_record('course', array('id' => $courseid));
         $newmodule = add_moduleinfo($module, $course);
@@ -83,24 +118,24 @@ class mod_distributedquiz_quiz_creation_functions {
     }
     
     /*
-     * Creates a quiz object to pass to quiz_add_instance
+     * Creates a quiz object to pass to add_moduleinfo
      * @params $starttime
-     * @params $endtime
+     * @params $quizduration
      * @params $course(id)
      * @params $coursemodule
      * @return quiz stdClass
      */
-    public static function define_quiz_form($endtime, $course, $moduleid, $section, $groupnum = null) {
+    public static function define_quiz_form($quizduration, $course, $moduleid, $section, $groupnum = null) {
         $quiz = new stdClass();        
         date_default_timezone_set('PST');
         $name = date('y:m:d h:m:s');
-        echo("<script>console.log(". json_encode($name, JSON_HEX_TAG) .");</script>");
+        //echo("<script>console.log(". json_encode($name, JSON_HEX_TAG) .");</script>");
         $quiz->name = $name;
         $quiz->intro = "";
         $quiz->introformat = 1;
         $quiz->course = $course;
         $quiz->timeopen = time();
-        $quiz->timeclose = $endtime;
+        $quiz->timeclose = $quiz->timeopen + $quizduration;
         $quiz->timelimit = 0;
         $quiz->overduehandling = 'autosubmit';
         $quiz->graceperiod = 0;
@@ -188,13 +223,11 @@ class mod_distributedquiz_quiz_creation_functions {
      */
     public static function get_distributed_quiz_category($id) {
         global $DB;
-        $sql = 'select dq.category'
-                . 'from {distributedquiz} dq'
+        $sql = 'select dq.category '
+                . 'from {distributedquiz} dq '
                 . 'where dq.id = ?';
-        //$category = $DB->get_record_sql($sql, (array('id' => $id)));
-        //return $category->category;
-        // TODO put category in distributed quiz so can do this
-        return 9;
+        $category = $DB->get_record_sql($sql, (array('id' => $id)));
+        return $category->category;
     }
     
     /*
@@ -219,9 +252,14 @@ class mod_distributedquiz_quiz_creation_functions {
             }
         }
         
-        //choose one randomly
-        $chosen = array_rand($nonused);
-        return $nonused[$chosen]->id;
+        //choose one randomly if exists
+        if (count($nonused) == 0) {
+            return [];
+        }
+        else {
+            $chosen = array_rand($nonused);
+            return $nonused[$chosen]->id;
+        }
     }
     
     /*
@@ -238,6 +276,8 @@ class mod_distributedquiz_quiz_creation_functions {
                     JOIN {question_categories} qc ON q.category = qc.id
                 WHERE qc.id = ?;";
         $valid_options = $DB->get_records_sql($sql, array('category' => $category));
+        //echo("<script>console.log(". json_encode($valid_options, JSON_HEX_TAG) .");</script>");
+        
         $sql = "SELECT question_id
                 FROM {used_questions}
                 WHERE distributedquiz_id = ?;";
@@ -252,10 +292,6 @@ class mod_distributedquiz_quiz_creation_functions {
         return $chosen;
         
     }
-    // TODO TEST
-    // Need to wait until create database first
-
-
     
 }
     

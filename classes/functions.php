@@ -52,29 +52,51 @@ class mod_distributedquiz_functions {
         $messageid = message_send($message);
     }
     
-    public static function send_notifications_to_all_students($quizid, $include_admins=false) {
-        $groups = $DB->get_records('groups', array('courseid' => $cid));
-        $groupdataarray = [];
-        foreach ($groups as $group) {
-            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
-        }
+    public static function send_notifications_to_group($quizid, $include_admins=false) {
+//        $groups = $DB->get_records('groups', array('courseid' => $cid));
+//        $groupdataarray = [];
+//        foreach ($groups as $group) {
+//            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
+//        }
     }
     
     /* 
-     * Generates random quiz creation times based on a number of factors
-     * Note: 
-     * @param startcreation hour
-     * @param endcreation
-     * @param makequiztime
+     * Generates random quiz creation times at the given time at $startcreation
+     * in the appropriate time zone within the creationduration
+     * Note: all times should be timestamps
+     * @param startcreation 
+     * @param creationduration
      * @param numquestions
+     * @param timezoneobj a DateTimeZone
      * @return list of all quiz creation times
      */
-    public static function determine_creation_times($startcreation, $endcreation, $makequiztime, $numquestions) {
-        
-    }
-    
-    private static function randomize_creation_times() {
+    public static function determine_creation_times($startcreation, $creationduration, $numquestions, $timezoneobj) {
+        $times = [];
+        // Set first time
+        $timezone = new DateTime();
+        $timezone->setTimezone($timezoneobj);
+        $timezone->setTimestamp($startcreation);
+                
+        // Create timestamps
+        for ($i = 0; $i < $numquestions; $i++) {
+            // Get current day
+            $day = $timezone->format('D');
             
+            // Make sure is not a weekend
+            if ($day != 'Sat' && $day != 'Sun') {
+                // Add a new random time
+                $time = $timezone->getTimestamp();
+                $time += rand(0, $creationduration);
+                array_push($times, $time);
+            }
+            else {
+                // if it is it doesn't count as a day
+                $i -= 1;
+            }
+            // Move to next day
+            $timezone->add(new DateInterval('P1D'));
+        }
+        return $times;        
     }
 
 }

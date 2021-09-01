@@ -55,14 +55,37 @@ function distributedquiz_supports($feature) {
 function distributedquiz_add_instance($moduleinstance, $mform = null) {
     global $DB;
 
-    echo("<script>console.log(". json_encode($moduleinstance, JSON_HEX_TAG) .");</script>");
-    echo("<script>console.log(". json_encode($mform, JSON_HEX_TAG) .");</script>");
+    //echo("<script>console.log(". json_encode($moduleinstance, JSON_HEX_TAG) .");</script>");
     
     $moduleinstance->timecreated = time();
     $category = explode(",", $moduleinstance->category);
-    $moduleinstance->category = $category[0];
+    $moduleinstance->category = intval($category[0]);
 
     $id = $DB->insert_record('distributedquiz', $moduleinstance);
+    
+    
+    // Grab the current total of questions in the category 
+    $numberofquestions = intval($moduleinstance->numberofquestions);
+    $sql = "SELECT COUNT(*) as count
+            FROM {question}
+            WHERE category = ?;
+            ";
+    $numpossible = $DB->get_record_sql($sql, array('category' => $moduleinstance->category));
+    $numpossible = intval($numpossible->count);
+    // If unlimited is selected (recorded as 0) or there are too many questions
+    // selected, assign the current number of possible questions
+    if ($numberofquestions == 0 || $numberofquestions > $numpossible) {
+        $numberofquestions = $numpossible;
+    }
+    
+    //echo("<script>console.log(". json_encode($moduleinstance->coursemodule, JSON_HEX_TAG) .");</script>");
+    // Call function to create ad hoc tasks
+    $func = new mod_distributedquiz_quiz_creation_functions;
+    $func->set_all_future_quizzes($moduleinstance->coursemodule, 
+            $moduleinstance->timeopen, 
+            $moduleinstance->creationduration, 
+            $numberofquestions
+    );
 
     return $id;
 }
