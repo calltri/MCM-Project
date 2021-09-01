@@ -52,13 +52,13 @@ class mod_distributedquiz_functions {
         $messageid = message_send($message);
     }
     
-//    public static function send_notifications_to_all_students($quizid, $include_admins=false) {
+    public static function send_notifications_to_group($quizid, $include_admins=false) {
 //        $groups = $DB->get_records('groups', array('courseid' => $cid));
 //        $groupdataarray = [];
 //        foreach ($groups as $group) {
 //            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
 //        }
-//    }
+    }
     
     /* 
      * Generates random quiz creation times at the given time at $startcreation

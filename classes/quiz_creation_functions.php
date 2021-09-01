@@ -25,6 +25,13 @@ defined('MOODLE_INTERNAL') || die();
 
 class mod_distributedquiz_quiz_creation_functions {
     
+    /*
+     * Sets up numquestions number of quizzes to occur in the future
+     * @param course moduleid of associated distributedquiz
+     * @param $startcreation time
+     * @param creationduration
+     * @param numquestions
+     */
     public static function set_all_future_quizzes($moduleid, $startcreation, $creationduration, $numquestions) {
         $timezone = core_date::get_user_timezone_object();
         
@@ -41,7 +48,7 @@ class mod_distributedquiz_quiz_creation_functions {
     /*
      * Sets an ad hoc generate_quiz task to occur
      * @param runtime
-     * @param moduleid
+     * @param course moduleid
      * Note: Schedules a task
      */
     public static function set_future_quiz_creation($runtime, $moduleid) {
@@ -54,7 +61,9 @@ class mod_distributedquiz_quiz_creation_functions {
     }
     
     /*
-     * 
+     * This function creates a quiz from a distributedquiz, updates relevant tables,
+     * and adds questions to those quizzes.
+     * @param coursemoduleid for the distributedquiz 
      */
     public static function fully_define_quiz($coursemoduleid) {
         global $DB;
@@ -81,7 +90,6 @@ class mod_distributedquiz_quiz_creation_functions {
             'creation_time' => $newmodule->timecreated,
         ));
         
-        echo("<script>console.log(". json_encode($instance, JSON_HEX_TAG) .");</script>");
         self::assign_questions_to_quiz($instance, $newmodule->id);
         
     }
@@ -110,7 +118,7 @@ class mod_distributedquiz_quiz_creation_functions {
     }
     
     /*
-     * Creates a quiz object to pass to quiz_add_instance
+     * Creates a quiz object to pass to add_moduleinfo
      * @params $starttime
      * @params $quizduration
      * @params $course(id)
@@ -121,7 +129,7 @@ class mod_distributedquiz_quiz_creation_functions {
         $quiz = new stdClass();        
         date_default_timezone_set('PST');
         $name = date('y:m:d h:m:s');
-        echo("<script>console.log(". json_encode($name, JSON_HEX_TAG) .");</script>");
+        //echo("<script>console.log(". json_encode($name, JSON_HEX_TAG) .");</script>");
         $quiz->name = $name;
         $quiz->intro = "";
         $quiz->introformat = 1;
@@ -245,7 +253,7 @@ class mod_distributedquiz_quiz_creation_functions {
         }
         
         //choose one randomly if exists
-        if (count($nonused) != 0) {
+        if (count($nonused) == 0) {
             return [];
         }
         else {
@@ -267,8 +275,9 @@ class mod_distributedquiz_quiz_creation_functions {
                 FROM {question} q
                     JOIN {question_categories} qc ON q.category = qc.id
                 WHERE qc.id = ?;";
-        echo("<script>console.log(". json_encode($category, JSON_HEX_TAG) .");</script>");
         $valid_options = $DB->get_records_sql($sql, array('category' => $category));
+        //echo("<script>console.log(". json_encode($valid_options, JSON_HEX_TAG) .");</script>");
+        
         $sql = "SELECT question_id
                 FROM {used_questions}
                 WHERE distributedquiz_id = ?;";

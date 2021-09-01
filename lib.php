@@ -55,7 +55,7 @@ function distributedquiz_supports($feature) {
 function distributedquiz_add_instance($moduleinstance, $mform = null) {
     global $DB;
 
-    echo("<script>console.log(". json_encode($moduleinstance, JSON_HEX_TAG) .");</script>");
+    //echo("<script>console.log(". json_encode($moduleinstance, JSON_HEX_TAG) .");</script>");
     
     $moduleinstance->timecreated = time();
     $category = explode(",", $moduleinstance->category);
@@ -77,15 +77,15 @@ function distributedquiz_add_instance($moduleinstance, $mform = null) {
     if ($numberofquestions == 0 || $numberofquestions > $numpossible) {
         $numberofquestions = $numpossible;
     }
-    echo("<script>console.log(". json_encode($numberofquestions, JSON_HEX_TAG) .");</script>");
     
-    // TODO call function to create ad hoc tasks
-//    $func = new mod_distributedquiz_quiz_creation_functions;
-//    $func->set_all_future_quizzes($moduleinstance->id, 
-//            $moduleinstance->startcreation, 
-//            $moduleinstance->creationduration, 
-//            $numberofquestions
-//    );
+    //echo("<script>console.log(". json_encode($moduleinstance->coursemodule, JSON_HEX_TAG) .");</script>");
+    // Call function to create ad hoc tasks
+    $func = new mod_distributedquiz_quiz_creation_functions;
+    $func->set_all_future_quizzes($moduleinstance->coursemodule, 
+            $moduleinstance->timeopen, 
+            $moduleinstance->creationduration, 
+            $numberofquestions
+    );
 
     return $id;
 }
