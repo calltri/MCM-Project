@@ -52,12 +52,36 @@ class mod_distributedquiz_functions {
         $messageid = message_send($message);
     }
     
-    public static function send_notifications_to_group($quizid, $include_admins=false) {
-//        $groups = $DB->get_records('groups', array('courseid' => $cid));
-//        $groupdataarray = [];
-//        foreach ($groups as $group) {
-//            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
-//        }
+    public static function get_moduleid_from_id($quizid, $modulename) {
+        global $DB;
+        $cm = $DB->get_record_sql("select id 
+                                    from {course_modules} cm 
+                                    join {modules} m on m.id = cm.instance 
+                                    where m.id = 'quiz' and cm.instance = ?);",
+                array('m.id' => $modulename, 'cm.instance' => $quizid));
+        return cm;
+    }
+    
+    public static function send_all_notifications($cmid, $quizid, $include_admins=false) {
+        global $DB;
+        // Grab course module id and course id to get the course context
+        $cm = self::get_module_from_cmid($cmid);
+        $courseid = $DB->get_records_sql("select course from {course_modules} 
+               where id = ?;", array('id' => $cm));
+        $info = new \core_availability\info_module($cm);
+        
+        // Get enrolled users
+        $users = get_enrolled_users(context_course::instance($courseid));      
+        // Get users that can access the quiz
+        $filtered = $info->filter_user_list($users);
+        
+        // TODO Filter out admin users
+        
+        
+        // Send notifications to all users
+        foreach($filtered as $user) {
+            self::send_notification($cmid, $user);
+        }
     }
     
     /* 

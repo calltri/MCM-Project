@@ -91,7 +91,7 @@ class mod_distributedquiz_quiz_creation_functions {
         ));
         
         self::assign_questions_to_quiz($instance, $newmodule->id);
-        
+        return $newmodule->id;
     }
     
     /*

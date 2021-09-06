@@ -28,12 +28,12 @@ class generate_quiz extends \core\task\adhoc_task {
          $data = $this->get_custom_data();
          
         $quizfunctions = new \mod_distributedquiz_quiz_creation_functions;
-        $quizfunctions->fully_define_quiz($data->course_module_id);
+        $id = $quizfunctions->fully_define_quiz($data->course_module_id);
         
         
         //
         //TODO send notificaiton
         //$functions = new mod_distributedquiz_functions;
-        //$functions->send_notification(2, 2);
+        //$functions->send_all_notifications(2, $id);
     }
 }
