@@ -55,7 +55,7 @@ function distributedquiz_supports($feature) {
 function distributedquiz_add_instance($moduleinstance, $mform = null) {
     global $DB;
 
-    echo("<script>console.log(". json_encode($moduleinstance, JSON_HEX_TAG) .");</script>");
+    //echo("<script>console.log(". json_encode($moduleinstance, JSON_HEX_TAG) .");</script>");
     
     $moduleinstance->timecreated = time();
     $category = explode(",", $moduleinstance->category);

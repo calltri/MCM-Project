@@ -31,9 +31,8 @@ class generate_quiz extends \core\task\adhoc_task {
         $id = $quizfunctions->fully_define_quiz($data->course_module_id);
         
         
-        //
-        //TODO send notificaiton
-        //$functions = new mod_distributedquiz_functions;
-        //$functions->send_all_notifications(2, $id);
+        //send notificaiton
+//        $functions = new \mod_distributedquiz_functions;
+//        $functions->send_all_notifications($id);
     }
 }
