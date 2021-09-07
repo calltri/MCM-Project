@@ -72,8 +72,8 @@ $PAGE->set_context($modulecontext);
 //        2
 //);
 
-$functions = new mod_distributedquiz_functions;
-$functions->send_all_notifications(117);
+//$functions = new mod_distributedquiz_functions;
+//$functions->send_all_notifications(117);
 
 /*
  * TODO something is messed up with quiz_data?
