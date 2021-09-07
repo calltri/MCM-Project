@@ -69,19 +69,19 @@ class mod_distributedquiz_quiz_creation_functions {
         global $DB;
         // Seed random number generator
         // Get required information from the distributed quiz instance
-        $sql = 'select course, section, groupingid, instance '
+        $sql = 'select course, section, availability, instance '
                 . 'from {course_modules} ' 
                 . 'where id = ?;';
         $records = $DB->get_record_sql($sql, array('id' => $coursemoduleid));
         $course = $records->course;
         $section = $records->section - 1;
-        $groupingid = $records->groupingid;
+        $availability = $records->availability;
         $instance = $records->instance;
         // Grab the quiz duration
         $quizduration = $DB->get_record_sql('SELECT timelimit FROM {distributedquiz} WHERE id = ?',
                 array('id' => $instance));
         
-        $newmodule = self::create_quiz($quizduration->timelimit, $course, $section, $groupingid);
+        $newmodule = self::create_quiz($quizduration->timelimit, $course, $section, $availability);
                 
         // update subquizzes table
         $DB->insert_record('subquizzes', array(
@@ -91,7 +91,7 @@ class mod_distributedquiz_quiz_creation_functions {
         ));
         
         self::assign_questions_to_quiz($instance, $newmodule->id);
-        
+        return $newmodule->id;
     }
     
     /*
@@ -99,15 +99,16 @@ class mod_distributedquiz_quiz_creation_functions {
      * @params quizduration
      * @params courseid
      * @params section - Should be the same as the corresponding distributedquiz
+     * @params availability
      * @return updated module object
      */
-    public static function create_quiz($quizduration, $courseid, $section, $groupnum = null) {
+    public static function create_quiz($quizduration, $courseid, $section, $availability) {
         global $DB;
         
         $moduleid = $DB->get_record_sql('SELECT id FROM {modules} WHERE name = ?;',
                 array('name' => 'quiz')); 
         
-        $module = self::define_quiz_form($quizduration, $courseid, $moduleid->id, $section, $groupnum);
+        $module = self::define_quiz_form($quizduration, $courseid, $moduleid->id, $section, $availability);
         
         $course = $DB->get_record('course', array('id' => $courseid));
         $newmodule = add_moduleinfo($module, $course);
@@ -119,13 +120,14 @@ class mod_distributedquiz_quiz_creation_functions {
     
     /*
      * Creates a quiz object to pass to add_moduleinfo
-     * @params $starttime
      * @params $quizduration
      * @params $course(id)
-     * @params $coursemodule
+     * @params $coursemoduleid
+     * @params $section of the course
+     * @params $availability 
      * @return quiz stdClass
      */
-    public static function define_quiz_form($quizduration, $course, $moduleid, $section, $groupnum = null) {
+    public static function define_quiz_form($quizduration, $course, $moduleid, $section, $availability) {
         $quiz = new stdClass();        
         date_default_timezone_set('PST');
         $name = date('y:m:d h:m:s');
@@ -179,11 +181,9 @@ class mod_distributedquiz_quiz_creation_functions {
         $quiz->visibleoncoursepage = 1;
         $quiz->visibleold = 1;
         $quiz->section = $section;
-        // Add group number if applicable
-        if ($groupnum != null) {
-            $quiz->groupmode = 1;
-            $quiz->groupingid = $groupnum;
-        }
+        // Make grouping id be the same as the one passed in
+        $quiz->availability = $availability;
+        
         return $quiz;
        
     }

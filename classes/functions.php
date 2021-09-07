@@ -52,12 +52,44 @@ class mod_distributedquiz_functions {
         $messageid = message_send($message);
     }
     
-    public static function send_notifications_to_group($quizid, $include_admins=false) {
-//        $groups = $DB->get_records('groups', array('courseid' => $cid));
-//        $groupdataarray = [];
-//        foreach ($groups as $group) {
-//            $groupdataarray[] = $functions->get_group_data($group, $start, $end);
-//        }
+    public static function get_course_module_id_from_id($quizid, $modulename) {
+        global $DB;
+        $cm = $DB->get_record_sql("select cm.id 
+                                    from {course_modules} cm 
+                                    join {modules} m on m.id = cm.module 
+                                    where m.name = ? and cm.instance = ?;",
+                array('m.id' => $modulename, 'cm.instance' => $quizid));
+        return $cm->id;
+    }
+    
+    public static function send_all_notifications($quizid, $include_admins=false) {
+        global $DB;
+        // Grab course module id and course id to get the course context
+        $cmid = self::get_course_module_id_from_id($quizid, 'quiz');
+        $courseid = $DB->get_record_sql("select course from {course_modules} 
+               where id = ?;", array('id' => $cmid));
+        $courseid = intval($courseid->course);
+        
+        // Get the contexts  for the course
+        $course = context_course::instance($courseid);
+        $modinfo = get_fast_modinfo($courseid);
+        $cm = $modinfo->get_cm($cmid);
+        $info = new \core_availability\info_module($cm);
+        
+        // Get enrolled users
+        $users = get_enrolled_users($course);      
+        echo("<script>console.log(". json_encode($users, JSON_HEX_TAG) .");</script>");
+        // Get users that can access the quiz
+        $filtered = $info->filter_user_list($users);
+        echo("<script>console.log(". json_encode($filtered, JSON_HEX_TAG) .");</script>");
+        
+        // TODO Filter out admin users
+        
+        
+        // Send notifications to all users
+        foreach($filtered as $user) {
+            self::send_notification($quizid, $user->id);
+        }
     }
     
     /* 
