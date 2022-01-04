@@ -74,7 +74,9 @@ class mod_distributedquiz_quiz_creation_functions {
                 . 'where id = ?;';
         $records = $DB->get_record_sql($sql, array('id' => $coursemoduleid));
         $course = $records->course;
-        $section = $records->section - 1;
+        $section_record = $DB->get_record('course_sections',
+            array('id' => $records->section), '*', IGNORE_MISSING);
+        $section = $section_record->section;
         $availability = $records->availability;
         $instance = $records->instance;
         // Grab the quiz duration
