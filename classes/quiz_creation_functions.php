@@ -80,10 +80,10 @@ class mod_distributedquiz_quiz_creation_functions {
         $availability = $records->availability;
         $instance = $records->instance;
         // Grab the quiz duration
-        $quizduration = $DB->get_record_sql('SELECT timelimit FROM {distributedquiz} WHERE id = ?',
+         $distributedrecord= $DB->get_record_sql('SELECT name, timelimit FROM {distributedquiz} WHERE id = ?',
                 array('id' => $instance));
         
-        $newmodule = self::create_quiz($quizduration->timelimit, $course, $section, $availability);
+        $newmodule = self::create_quiz($distributedrecord->name, $distributedrecord->timelimit, $course, $section, $availability);
                 
         // update subquizzes table
         $DB->insert_record('subquizzes', array(
@@ -98,19 +98,20 @@ class mod_distributedquiz_quiz_creation_functions {
     
     /*
      * Function to create a quiz in a course/section
+     * @params name of distributed quiz
      * @params quizduration
      * @params courseid
      * @params section - Should be the same as the corresponding distributedquiz
      * @params availability
      * @return updated module object
      */
-    public static function create_quiz($quizduration, $courseid, $section, $availability) {
+    public static function create_quiz($name, $quizduration, $courseid, $section, $availability) {
         global $DB;
         
         $moduleid = $DB->get_record_sql('SELECT id FROM {modules} WHERE name = ?;',
                 array('name' => 'quiz')); 
         
-        $module = self::define_quiz_form($quizduration, $courseid, $moduleid->id, $section, $availability);
+        $module = self::define_quiz_form($name, $quizduration, $courseid, $moduleid->id, $section, $availability);
         
         $course = $DB->get_record('course', array('id' => $courseid));
         $newmodule = add_moduleinfo($module, $course);
@@ -122,6 +123,7 @@ class mod_distributedquiz_quiz_creation_functions {
     
     /*
      * Creates a quiz object to pass to add_moduleinfo
+     * @params name of distributed quiz
      * @params $quizduration
      * @params $course(id)
      * @params $coursemoduleid
@@ -129,12 +131,12 @@ class mod_distributedquiz_quiz_creation_functions {
      * @params $availability 
      * @return quiz stdClass
      */
-    public static function define_quiz_form($quizduration, $course, $moduleid, $section, $availability) {
+    public static function define_quiz_form($name, $quizduration, $course, $moduleid, $section, $availability) {
         $quiz = new stdClass();        
         date_default_timezone_set('PST');
-        $name = date('y:m:d h:m:s');
-        //echo("<script>console.log(". json_encode($name, JSON_HEX_TAG) .");</script>");
-        $quiz->name = $name;
+        $quizname = strval($name) . ': ' . strval(date('y:m:d h:m:s'));
+        echo("<script>console.log(". json_encode($quizname, JSON_HEX_TAG) .");</script>");
+        $quiz->name = $quizname;
         $quiz->intro = "";
         $quiz->introformat = 1;
         $quiz->course = $course;
@@ -160,8 +162,10 @@ class mod_distributedquiz_quiz_creation_functions {
         $quiz->questionsperpage = 1;
         $quiz->navmethod = 'free';
         $quiz->shuffleanswers = 1;
-        $quiz->sumgrades = 0.0;
-        $quiz->grade = 10.0;
+        // Sumgrades is points in the quiz, grade refers to how many points 
+        // the entire quiz is to the best of my understanding
+        $quiz->sumgrades = 1.0;
+        $quiz->grade = 1.0;
         $quiz->timecreated = 0; //overwritten in quiz_add_instance
         $quiz->timemodified = 0;
         // When inserting quiz the code assigns quiz->password from quiz->quizpassword
