@@ -93,6 +93,10 @@ class mod_distributedquiz_quiz_creation_functions {
         ));
         
         self::assign_questions_to_quiz($instance, $newmodule->id);
+        
+        // Assign quiz to a grade category
+        self::set_quiz_grade_category($newmodule->id, $distributedrecord->name, $course);
+        
         return $newmodule->id;
     }
     
@@ -135,7 +139,7 @@ class mod_distributedquiz_quiz_creation_functions {
         $quiz = new stdClass();        
         date_default_timezone_set('PST');
         $quizname = strval($name) . ': ' . strval(date('y:m:d h:m:s'));
-        echo("<script>console.log(". json_encode($quizname, JSON_HEX_TAG) .");</script>");
+        //echo("<script>console.log(". json_encode($quizname, JSON_HEX_TAG) .");</script>");
         $quiz->name = $quizname;
         $quiz->intro = "";
         $quiz->introformat = 1;
@@ -299,5 +303,63 @@ class mod_distributedquiz_quiz_creation_functions {
         
     }
     
+    /*
+     * Assigns a quiz to a category
+     * @param quizid
+     * @param name of distributed quiz
+     * $param course(id)
+     */
+    public static function set_quiz_grade_category($quizid, $name, $course) {
+        global $DB;
+        
+        $categoryname = strval($name);
+        // Find if grade category exists
+        $sql = "SELECT *
+                FROM {grade_categories}
+                WHERE courseid = ? and fullname = ?;";
+        $category = $DB->get_record_sql($sql, array('courseid' => $course, 'fullname' => $categoryname), $strictness=IGNORE_MISSING);
+         
+        // If doesn't already exist, create a grade category for the distributed quizzes
+        if ($category == false) {
+            $id = self::create_grade_category($categoryname, $course);
+            $category = $DB->get_record_sql('SELECT * FROM {grade_categories} WHERE id = ?;', array('id' => $id));    
+        }
+        // Assign quiz to a grade category
+        $quiz_item = $DB->get_record_sql("SELECT * 
+            FROM {grade_items} 
+            WHERE itemmodule = ? and iteminstance = ?;", 
+                array('itemmodule' => 'quiz', 'iteminstance' => $quizid));
+        $quiz_item->categoryid = $category->id;        
+        $DB->update_record('grade_items', $quiz_item, $bulk=false);
+    }
+    
+    /*
+     * Creates a grade category in the course 
+     * @param name of distributed quiz
+     * $param course(id)
+     */
+    public static function create_grade_category($name, $course) {
+        global $DB;
+        
+        $category = new stdClass();
+        $category->courseid = $course;
+        $category->parent = 1;
+        $category->depth = 2;
+        $category->path = '/1/2/';
+        $category->fullname = $name;
+        $category->aggregation = 13;
+        $category->keephigh = 0;
+        $category->droplow = 0;
+        $category->aggregationonlygraded = 1;
+        $category->aggregateoutcomes = 0;
+        $category->timecreated = time();
+        $category->timemodified = time();
+        $category->hidden = 0;
+        
+        
+        $id = $DB->insert_record('grade_categories', $category, $returnid=true, $bulk=false);
+        return $id;
+        
+    }
 }
     
