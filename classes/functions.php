@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /*
- * Author: Tristan Call
+ * Author: Madison Call
  * Date Created: 1/25/20
  * Last Updated: 1/25/20
  */

@@ -19,7 +19,7 @@
  *
  * @package     mod_distributedquiz
  * @category    string
- * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
+ * @copyright   2021 Madison Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,7 +33,7 @@ $string['categoryfield'] = 'Category';
 $string['categoryfield_help'] = 'Choose the category questions will be selected from';
 $string['pluginname'] = 'mod_distributedquiz';
 $string['distributedquizname'] = 'Distributed Quiz';
-$string['pluginadministration'] = 'Tristan Call';
+$string['pluginadministration'] = 'Madison Call';
 $string['distributedquiznameplural'] = 'Distributed Quizzes';
 
 $string['numberofquestions'] = 'How many questions should be asked';

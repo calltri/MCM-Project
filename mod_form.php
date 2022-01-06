@@ -18,7 +18,7 @@
  * The main mod_distributedquiz configuration form.
  *
  * @package     mod_distributedquiz
- * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
+ * @copyright   2021 Madison Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,7 +30,7 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  * Module instance settings form.
  *
  * @package    mod_distributedquiz
- * @copyright  2021 Tristan Call <tcall@zagmail.gonzaga.edu>
+ * @copyright  2021 Madison Call <tcall@zagmail.gonzaga.edu>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_distributedquiz_mod_form extends moodleform_mod {

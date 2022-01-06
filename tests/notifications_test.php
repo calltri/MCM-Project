@@ -19,7 +19,7 @@
  *
  * @package     mod_distributedquiz
  * @category    test
- * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
+ * @copyright   2021 Madison Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
  * The notifications test class.
  *
  * @package    mod_distributedquiz
- * @copyright  2021 Tristan Call <tcall@zagmail.gonzaga.edu>
+ * @copyright  2021 Madison Call <tcall@zagmail.gonzaga.edu>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_distributedquiz_notifications_testcase extends advanced_testcase {

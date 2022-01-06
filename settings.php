@@ -19,7 +19,7 @@
  *
  * @package     mod_distributedquiz
  * @category    admin
- * @copyright   2021 Tristan Call <tcall@zagmail.gonzaga.edu>
+ * @copyright   2021 Madison Call <tcall@zagmail.gonzaga.edu>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
